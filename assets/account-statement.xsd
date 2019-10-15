@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="accountStatement" type="accountStatementType" />
+
+	<xs:complexType name="accountStatementType">
+		<xs:all>
+			<xs:element name="bank" type="company" />
+			<xs:element name="client" type="person" />
+			<xs:element name="account" type="account" />
+			<xs:element name="period" type="statementPeriod" />
+			<xs:element name="transactionHistory" type="transactionHistory" />
+		</xs:all>
+	</xs:complexType>
+
+	<xs:complexType name="transactionHistory">
+		<xs:sequence>
+			<xs:element name="transaction" type="transaction" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="transaction">
+		<xs:sequence>
+			<xs:element name="ordered" type="xs:date"/>
+			<xs:element name="processed" type="xs:date"/>
+			<xs:element name="description">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="300"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="amount" type="twoPlaceDecimal"/>
+			<xs:element name="balance" type="twoPlaceDecimal"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="statementPeriod">
+		<xs:sequence>
+			<xs:element name="from" type="accountState"/>
+			<xs:element name="to" type="accountState"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="accountState">
+		<xs:sequence>
+			<xs:element name="date" type="xs:date"/>
+			<xs:element name="balance" type="twoPlaceDecimal"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="account">
+		<xs:all>
+			<xs:element name="number">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:pattern value="\d{26}" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="currency">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="[A-Z]{3}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="credit" type="accountCredit" minOccurs="0"/>
+		</xs:all>
+		<xs:attribute name="type" type="words" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="accountCredit">
+		<xs:sequence>
+			<xs:element name="limit" type="twoPlaceDecimal"/>
+			<xs:element name="interest" type="twoPlaceDecimal"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="twoPlaceDecimal">
+		<xs:restriction base="xs:decimal">
+			<xs:pattern value="-?\d+\.\d{2}" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="company">
+		<xs:sequence>
+			<xs:element name="name" type="companyName" />
+			<xs:element name="address" type="address" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="person">
+		<xs:sequence>
+			<xs:element name="name" type="fullName" />
+			<xs:element name="address" type="address" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="fullName">
+		<xs:sequence>
+			<xs:element name="firstName" maxOccurs="3">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="(\p{Lu}\p{Ll}+)" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="lastName">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="(\p{Lu}\p{Ll}+)(-\p{Lu}\p{Ll}+)?" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="address">
+		<xs:sequence>
+			<xs:element name="street" type="words">
+			</xs:element>
+			<xs:element name="number">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="[1-9][0-9]*((/[1-9][0-9]*\p{L}?)|(\p{L}?))?" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="postCode">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="[0-9]{2}-[0-9]{3}" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="city">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="(\p{Lu}\p{Ll}+)( \p{Lu}\p{Ll}+)*" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="words">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(\p{Lu}?\p{Ll}+\.?)( \p{Lu}?\p{Ll}+\.?)*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="companyName">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="type" type="companyType" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:simpleType name="companyType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="S.A." />
+			<xs:enumeration value="s. c." />
+			<xs:enumeration value="sp. j." />
+			<xs:enumeration value="sp. k." />
+			<xs:enumeration value="sp. p." />
+			<xs:enumeration value="sp. z o.o." />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
