@@ -30,15 +30,9 @@
 			<interest>16.50</interest>
 		</credit>
 	</account>
-	<period>
-		<from>
-			<date>2015-05-08</date>
-			<balance>9120.00</balance>
-		</from>
-		<to>
-			<date>2015-06-09</date>
-			<balance>102355608.43</balance>
-		</to>
+	<period startBalance="9120.00">
+		<from>2015-05-08</from>
+		<to>2015-06-09</to>
 	</period>
 	<transactionHistory>
 		<transaction>
@@ -46,7 +40,6 @@
 			<processed>2015-06-08</processed>
 			<description>Wypłata karta: Visa w bankomacie: PLUS BANK</description>
 			<amount>-200.00</amount>
-			<balance>182355608.43</balance>
 		</transaction>
 		<transaction>
 			<ordered>2015-06-06</ordered>
@@ -55,7 +48,6 @@
 ul. Św. Marcin 1, 60-100 Poznań
 Przelew środków</description>
 			<amount>-700.00</amount>
-			<balance>102355808.43</balance>
 		</transaction>
 		<transaction>
 			<ordered>2015-06-04</ordered>
@@ -64,14 +56,12 @@ Przelew środków</description>
 ul. Wawrzyniaka 15, 60-100 Poznań
 Oplata za czynsz</description>
 			<amount>-370.00</amount>
-			<balance>182356508.43</balance>
 		</transaction>
 		<transaction>
 			<ordered>2015-06-02</ordered>
 			<processed>2015-06-02</processed>
 			<description>Zapłata karta Visa w POS: Restauracja</description>
 			<amount>-30.00</amount>
-			<balance>102356878.43</balance>
 		</transaction>
 		<transaction>
 			<ordered>2015-05-31</ordered>
@@ -80,28 +70,24 @@ Oplata za czynsz</description>
 ul. Wiosenna 1/10, 00-023 Warszawa
 Wpłata na lokatę</description>
 			<amount>-1600.00</amount>
-			<balance>102356908.43</balance>
 		</transaction>
 		<transaction>
 			<ordered>2015-05-29</ordered>
 			<processed>2015-05-29</processed>
 			<description>Zaplata kartą Visa w POS: Sklep spożywczy</description>
 			<amount>-130.00</amount>
-			<balance>102358508.43</balance>
 		</transaction>
 		<transaction>
 			<ordered>2015-05-27</ordered>
 			<processed>2015-05-27</processed>
 			<description>Wpływ należności</description>
 			<amount>630.00</amount>
-			<balance>102358638.43</balance>
 		</transaction>
 		<transaction>
 			<ordered>2015-05-25</ordered>
 			<processed>2015-05-25</processed>
 			<description>Zwrot za towar</description>
 			<amount>1206.00</amount>
-			<balance>102358008.43</balance>
 		</transaction>
 	</transactionHistory>
 </accountStatement>

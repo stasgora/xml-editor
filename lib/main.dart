@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(MyApp());
 
@@ -25,11 +26,30 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  static const platform = const MethodChannel("dev.sgora.xml_editor/validation");
+
   List<Widget> widgets = List();
+  bool valid;
+
+  Future<void> validateXML() async {
+    bool valid;
+    try {
+      valid = await platform.invokeMethod('validateXML', {
+        'xml': 'account-statement-1',
+        'xsd': 'account-statement'
+      });
+    } on PlatformException catch (e) {
+      debugPrint(e.message);
+    }
+    setState(() {
+      this.valid = valid;
+    });
+  }
 
   void _incrementCounter() {
     setState(() {
-      widgets.add(FlatButton(child: Text("button")));
+      widgets.add(FlatButton(child: Text(valid.toString())));
+      validateXML();
     });
   }
 

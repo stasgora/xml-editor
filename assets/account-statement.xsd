@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-	<xs:element name="accountStatement" type="accountStatementType" />
+	<xs:element name="accountStatement" type="accountStatement" />
 
-	<xs:complexType name="accountStatementType">
+	<xs:complexType name="accountStatement">
 		<xs:all>
 			<xs:element name="bank" type="company" />
 			<xs:element name="client" type="person" />
@@ -31,15 +31,15 @@
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="amount" type="twoPlaceDecimal"/>
-			<xs:element name="balance" type="twoPlaceDecimal"/>
 		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="statementPeriod">
 		<xs:sequence>
-			<xs:element name="from" type="accountState"/>
-			<xs:element name="to" type="accountState"/>
+			<xs:element name="from" type="xs:date"/>
+			<xs:element name="to" type="xs:date"/>
 		</xs:sequence>
+		<xs:attribute name="startBalance" type="twoPlaceDecimal" use="required"/>
 	</xs:complexType>
 
 	<xs:complexType name="accountState">
@@ -72,14 +72,20 @@
 
 	<xs:complexType name="accountCredit">
 		<xs:sequence>
-			<xs:element name="limit" type="twoPlaceDecimal"/>
-			<xs:element name="interest" type="twoPlaceDecimal"/>
+			<xs:element name="limit" type="positiveTwoPlaceDecimal"/>
+			<xs:element name="interest" type="positiveTwoPlaceDecimal"/>
 		</xs:sequence>
 	</xs:complexType>
 
 	<xs:simpleType name="twoPlaceDecimal">
 		<xs:restriction base="xs:decimal">
 			<xs:pattern value="-?\d+\.\d{2}" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="positiveTwoPlaceDecimal">
+		<xs:restriction base="xs:decimal">
+			<xs:pattern value="\d+\.\d{2}" />
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -146,7 +152,7 @@
 
 	<xs:simpleType name="words">
 		<xs:restriction base="xs:string">
-			<xs:pattern value="(\p{Lu}?\p{Ll}+\.?)( \p{Lu}?\p{Ll}+\.?)*" />
+			<xs:pattern value="((\d+)|(\p{Lu}?\p{Ll}+\.?))( ((\d+)|(\p{Lu}?\p{Ll}+\.?)))*" />
 		</xs:restriction>
 	</xs:simpleType>
 
