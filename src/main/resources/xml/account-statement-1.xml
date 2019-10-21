@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<accountStatement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="account-statement.xsd">
+	<bank>
+		<name type="S.A.">Plus Bank</name>
+		<address>
+			<street>Stanów Zjednoczonych</street>
+			<number>61A</number>
+			<postCode>04-028</postCode>
+			<city>Warszawa</city>
+		</address>
+	</bank>
+	<client>
+		<name>
+			<firstName>Adam</firstName>
+			<lastName>Nowakowski</lastName>
+		</name>
+		<address>
+			<street>Wiosenna</street>
+			<number>1/10</number>
+			<postCode>00-023</postCode>
+			<city>Warszawa</city>
+		</address>
+	</client>
+	<account type="Konto Plus">
+		<number>46142212994692297296215262</number>
+		<currency>PLN</currency>
+		<credit>
+			<limit>6000.00</limit>
+			<interest>16.50</interest>
+		</credit>
+	</account>
+	<period startBalance="9120.00">
+		<from>2015-05-08</from>
+		<to>2015-06-09</to>
+	</period>
+	<transactionHistory>
+		<transaction>
+			<ordered>2015-06-08</ordered>
+			<processed>2015-06-08</processed>
+			<description>Wypłata karta: Visa w bankomacie: PLUS BANK</description>
+			<amount>-200.00</amount>
+		</transaction>
+		<transaction>
+			<ordered>2015-06-06</ordered>
+			<processed>2015-06-06</processed>
+			<description>Grzegorz Weinowski
+ul. Św. Marcin 1, 60-100 Poznań
+Przelew środków</description>
+			<amount>-700.00</amount>
+		</transaction>
+		<transaction>
+			<ordered>2015-06-04</ordered>
+			<processed>2015-06-04</processed>
+			<description>Spółdzielnia mieszkaniowa
+ul. Wawrzyniaka 15, 60-100 Poznań
+Oplata za czynsz</description>
+			<amount>-370.00</amount>
+		</transaction>
+		<transaction>
+			<ordered>2015-06-02</ordered>
+			<processed>2015-06-02</processed>
+			<description>Zapłata karta Visa w POS: Restauracja</description>
+			<amount>-30.00</amount>
+		</transaction>
+		<transaction>
+			<ordered>2015-05-31</ordered>
+			<processed>2015-05-31</processed>
+			<description>Adam Nowakowski
+ul. Wiosenna 1/10, 00-023 Warszawa
+Wpłata na lokatę</description>
+			<amount>-1600.00</amount>
+		</transaction>
+		<transaction>
+			<ordered>2015-05-29</ordered>
+			<processed>2015-05-29</processed>
+			<description>Zaplata kartą Visa w POS: Sklep spożywczy</description>
+			<amount>-130.00</amount>
+		</transaction>
+		<transaction>
+			<ordered>2015-05-27</ordered>
+			<processed>2015-05-27</processed>
+			<description>Wpływ należności</description>
+			<amount>630.00</amount>
+		</transaction>
+		<transaction>
+			<ordered>2015-05-25</ordered>
+			<processed>2015-05-25</processed>
+			<description>Zwrot za towar</description>
+			<amount>1206.00</amount>
+		</transaction>
+	</transactionHistory>
+</accountStatement>

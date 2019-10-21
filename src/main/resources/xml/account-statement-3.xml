@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<accountStatement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="account-statement.xsd">
+	<bank>
+		<name type="S.A.">Santander Bank Polska</name>
+		<address>
+			<street>Strzegomska</street>
+			<number>42c</number>
+			<postCode>53-611</postCode>
+			<city>Wrocław</city>
+		</address>
+	</bank>
+	<client>
+		<name>
+			<firstName>Alicja</firstName>
+			<lastName>Bawiała</lastName>
+		</name>
+		<address>
+			<street>Grabowska</street>
+			<number>12/4</number>
+			<postCode>63-410</postCode>
+			<city>Wilanów</city>
+		</address>
+	</client>
+	<account type="Konto Godne Polecenia">
+		<number>51109000048676749072520858</number>
+		<currency>PLN</currency>
+	</account>
+	<period startBalance="19009.50">
+		<from>2017-06-16</from>
+		<to>2017-08-15</to>
+	</period>
+	<transactionHistory>
+		<transaction>
+			<ordered>2017-08-10</ordered>
+			<processed>2017-08-10</processed>
+			<description>Wypłata kartą Mastercard w bankomacie</description>
+			<amount>-100.00</amount>
+		</transaction>
+		<transaction>
+			<ordered>2017-07-15</ordered>
+			<processed>2017-07-16</processed>
+			<description>Sklep Budowlany WX, Faktura</description>
+			<amount>-370.00</amount>
+		</transaction>
+		<transaction>
+			<ordered>2017-07-01</ordered>
+			<processed>2017-07-02</processed>
+			<description>Pensja</description>
+			<amount>12000.00</amount>
+		</transaction>
+	</transactionHistory>
+</accountStatement>

@@ -11,6 +11,8 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/layout.fxml"));
         Parent root = loader.load();
+        Controller controller = loader.getController();
+        controller.init();
 
         stage.setTitle("XML Editor");
         stage.show();

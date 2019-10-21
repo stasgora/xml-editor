@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<accountStatement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="account-statement.xsd">
+	<bank>
+		<name type="S.A.">Bank Millennium</name>
+		<address>
+			<street>Stanisława Żaryna</street>
+			<number>2A</number>
+			<postCode>02-593</postCode>
+			<city>Warszawa</city>
+		</address>
+	</bank>
+	<client>
+		<name>
+			<firstName>Jan</firstName>
+			<firstName>Krzysztof</firstName>
+			<lastName>Wyszkowski</lastName>
+		</name>
+		<address>
+			<street>Legnicka</street>
+			<number>21/42B</number>
+			<postCode>53-671</postCode>
+			<city>Malbork</city>
+		</address>
+	</client>
+	<account type="Konto standard">
+		<number>88130000007400468394332217</number>
+		<currency>PLN</currency>
+		<credit>
+			<limit>14000.00</limit>
+			<interest>16.00</interest>
+		</credit>
+	</account>
+	<period startBalance="11711.05">
+		<from>2018-10-26</from>
+		<to>2018-11-25</to>
+	</period>
+	<transactionHistory>
+		<transaction>
+			<ordered>2018-11-21</ordered>
+			<processed>2018-11-21</processed>
+			<description>Wypłata kartą Mastercard w bankomacie</description>
+			<amount>-300.00</amount>
+		</transaction>
+		<transaction>
+			<ordered>2018-11-11</ordered>
+			<processed>2018-11-11</processed>
+			<description>Spółdzielnia mieszkaniowa
+Oplata za czynsz, Listopad</description>
+			<amount>-730.00</amount>
+		</transaction>
+	</transactionHistory>
+</accountStatement>
