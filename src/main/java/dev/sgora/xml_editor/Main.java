@@ -17,7 +17,6 @@ public class Main extends Application {
         stage.setTitle("XML Editor");
         stage.show();
         stage.requestFocus();
-        stage.show();
     }
 
     public static void main(String[] args) {

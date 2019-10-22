@@ -1,4 +1,4 @@
-package dev.sgora.xml_editor;
+package dev.sgora.xml_editor.services.validation;
 
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
