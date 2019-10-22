@@ -1,0 +1,24 @@
+.root {
+	error-color: red;
+}
+
+.error-field {
+	-fx-text-box-border: error-color;
+	-fx-focus-color: error-color;
+	-fx-text-fill: error-color;
+}
+
+.context-menu {
+	-fx-padding: 0;
+	-fx-background-radius: 8px;
+}
+
+.context-menu .menu-item {
+	-fx-background-color: red;
+	-fx-background-radius: 8px;
+}
+
+.context-menu .menu-item > .label {
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+}

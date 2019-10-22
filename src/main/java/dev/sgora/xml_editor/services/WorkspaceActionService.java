@@ -11,8 +11,6 @@ import javafx.stage.Stage;
 import java.io.File;
 
 public class WorkspaceActionService {
-	private Stage window;
-
 	private DialogService dialogService;
 	private ValidationService validationService;
 
@@ -20,7 +18,6 @@ public class WorkspaceActionService {
 	private static final String OPEN_DOC_TITLE = "Open Document";
 
 	public WorkspaceActionService(Stage window) {
-		this.window = window;
 		dialogService = new DialogService(window);
 		validationService = new ValidationService();
 	}
