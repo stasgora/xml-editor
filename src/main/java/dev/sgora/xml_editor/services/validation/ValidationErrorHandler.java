@@ -1,8 +1,11 @@
 package dev.sgora.xml_editor.services.validation;
 
+import org.w3c.dom.Node;
+
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,6 +20,9 @@ public class ValidationErrorHandler implements ValidationEventHandler {
 		}
 		ValidationEventLocator locator = validationEvent.getLocator();
 		logger.log(Level.WARNING, locator.getLineNumber() + " " + locator.getColumnNumber());
+		Node node = locator.getNode();
+		Object object = locator.getObject();
+		URL url = locator.getURL();
 		return true;
 	}
 }

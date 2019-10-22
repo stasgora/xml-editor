@@ -1,4 +1,18 @@
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:controller="dev.sgora.xml_editor.Controller" xmlns:fx="http://javafx.com/fxml">
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+
+<VBox fx:controller="dev.sgora.xml_editor.WindowView" xmlns:fx="http://javafx.com/fxml">
+	<MenuBar>
+		<Menu text="File">
+			<MenuItem fx:id="openMenuItem" text="Open" accelerator="Ctrl+O"/>
+			<MenuItem fx:id="saveMenuItem" text="Save" accelerator="Ctrl+S"/>
+			<MenuItem fx:id="exportMenuItem" text="Export to PDF" accelerator="Ctrl+E"/>
+		</Menu>
+	</MenuBar>
+	<VBox fx:id="mainView">
+
+	</VBox>
 </VBox>
