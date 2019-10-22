@@ -7,9 +7,10 @@
 <VBox fx:controller="dev.sgora.xml_editor.WindowView" xmlns:fx="http://javafx.com/fxml">
 	<MenuBar>
 		<Menu text="File">
+			<MenuItem fx:id="newMenuItem" text="New" accelerator="Ctrl+N"/>
 			<MenuItem fx:id="openMenuItem" text="Open" accelerator="Ctrl+O"/>
 			<MenuItem fx:id="saveMenuItem" text="Save" accelerator="Ctrl+S"/>
-			<MenuItem fx:id="exportMenuItem" text="Export to PDF" accelerator="Ctrl+E"/>
+			<MenuItem fx:id="exportMenuItem" visible="false" text="Export to PDF" accelerator="Ctrl+E"/>
 		</Menu>
 	</MenuBar>
 	<VBox fx:id="mainView">

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<accountStatement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="account-statement.xsd">
+<accountStatement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/main/resources/account-statement.xsd">
 	<bank>
 		<name type="S.A.">Plus Bank</name>
 		<address>
-			<street>Stanów Zjednoczonych </street>
+			<street>Stanów Zjednoczonych</street>
 			<number>61A</number>
 			<postCode>04-028</postCode>
 			<city>Warszawa</city>

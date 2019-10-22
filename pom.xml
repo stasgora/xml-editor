@@ -53,7 +53,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>dev.sgora.xml_editor.Main</mainClass>
+                            <mainClass>dev.sgora.xml_editor.XMLEditor</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -65,7 +65,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>dev.sgora.xml_editor.Main</mainClass>
+                            <mainClass>dev.sgora.xml_editor.XMLEditor</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -94,7 +94,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>dev.sgora.xml_editor.Main</mainClass>
+                    <mainClass>dev.sgora.xml_editor.XMLEditor</mainClass>
                 </configuration>
             </plugin>
         </plugins>
