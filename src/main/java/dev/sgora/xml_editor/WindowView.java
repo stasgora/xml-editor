@@ -3,11 +3,9 @@ package dev.sgora.xml_editor;
 import com.google.inject.Inject;
 import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
-import dev.sgora.xml_editor.services.ui.WorkspaceActionService;
-import javafx.geometry.Side;
+import dev.sgora.xml_editor.services.ui.WorkspaceAction;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -23,21 +21,19 @@ public class WindowView {
 
 	public TextField testField;
 
+	private Parent root;
 	private Model<AccountStatement> model;
-	private WorkspaceActionService workspaceAction;
+	private WorkspaceAction workspaceAction;
 	private Stage window;
 
 	@Inject
-	void init(Stage window, Parent root, WorkspaceActionService workspaceAction, Model<AccountStatement> model) {
+	void init(Stage window, Parent root, WorkspaceAction workspaceAction, Model<AccountStatement> model) {
+		this.root = root;
 		this.model = model;
 		this.workspaceAction = workspaceAction;
 		this.window = window;
-		//validationService.validateXML(new File("xml/account-statement-1.xml"));
 
-		Scene scene = new Scene(root, 800, 500);
-		scene.getStylesheets().add(XMLEditor.class.getResource("/styles.css").toExternalForm());
-		window.setScene(scene);
-
+		setScene();
 		bindEvents();
 	}
 
@@ -54,15 +50,11 @@ public class WindowView {
 			}
 			window.setTitle(windowName);
 		});
+	}
 
-		ContextMenu validationMessage = new ContextMenu();
-		validationMessage.setAutoHide(false);
-		validationMessage.getItems().add(new MenuItem("Validation error"));
-		testField.hoverProperty().addListener(((observable, oldVal, newVal) -> {
-			if(newVal)
-				validationMessage.show(testField, Side.RIGHT, 10, 0);
-			else
-				validationMessage.hide();
-		}));
+	private void setScene() {
+		Scene scene = new Scene(root, 800, 500);
+		scene.getStylesheets().add(XMLEditor.class.getResource("/styles.css").toExternalForm());
+		window.setScene(scene);
 	}
 }

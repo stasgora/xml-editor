@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 import java.io.File;
 
 @Singleton
-public class WorkspaceActionService {
+public class WorkspaceActionService implements WorkspaceAction {
 	private DialogService dialogService;
 	private final Model<AccountStatement> model;
 	private ValidationService validationService;
@@ -27,6 +27,7 @@ public class WorkspaceActionService {
 		this.validationService = validationService;
 	}
 
+	@Override
 	public void openDocumentAction() {
 		File location = dialogService.showFileChooser(FileChooserAction.OPEN_DIALOG, OPEN_DOC_TITLE, filter);
 		if(location == null)
@@ -40,9 +41,11 @@ public class WorkspaceActionService {
 		}
 	}
 
+	@Override
 	public void newDocumentAction() {
 	}
 
+	@Override
 	public void saveDocumentAction() {
 		File location = dialogService.showFileChooser(FileChooserAction.SAVE_DIALOG, "Save Document", filter);
 		if(location == null)
