@@ -22,17 +22,17 @@
 	<TabPane>
 		<Tab text="Account Information">
 			<AnchorPane>
-				<VBox spacing="5.0">
+				<VBox spacing="10">
 					<padding>
-						<Insets top="5.0" left="5.0" right="5.0" bottom="5.0" />
+						<Insets top="10" left="10" right="10" bottom="10" />
 					</padding>
-					<TextField fx:id="testField" styleClass="error-field" />
+					<TextField fx:id="testField" styleClass="xml-field, error-field" />
 				</VBox>
 			</AnchorPane>
 		</Tab>
 		<Tab text="Transaction History">
 			<AnchorPane>
-
+				
 			</AnchorPane>
 		</Tab>
 	</TabPane>

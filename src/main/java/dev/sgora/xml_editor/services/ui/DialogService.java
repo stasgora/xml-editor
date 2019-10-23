@@ -1,5 +1,7 @@
 package dev.sgora.xml_editor.services.ui;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -13,8 +15,9 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.util.Optional;
 
+@Singleton
 public class DialogService {
-	private Stage window;
+	private final Stage window;
 
 	private EventHandler<KeyEvent> pressOnEnter = event -> {
 		if (KeyCode.ENTER.equals(event.getCode()) && event.getTarget() instanceof Button) {
@@ -22,7 +25,8 @@ public class DialogService {
 		}
 	};
 
-	public DialogService(Stage window) {
+	@Inject
+	private DialogService(Stage window) {
 		this.window = window;
 	}
 

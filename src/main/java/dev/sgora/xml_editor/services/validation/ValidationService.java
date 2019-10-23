@@ -1,5 +1,7 @@
 package dev.sgora.xml_editor.services.validation;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import dev.sgora.xml_editor.XMLEditor;
 import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.ObjectFactory;
@@ -16,12 +18,14 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Singleton
 public class ValidationService {
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private Schema schema;
 
-	public ValidationService() {
+	@Inject
+	private ValidationService() {
 		try {
 			var factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			schema = factory.newSchema(new StreamSource(XMLEditor.class.getResourceAsStream("/account-statement.xsd")));

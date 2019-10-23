@@ -8,17 +8,17 @@
 	-fx-text-fill: error-color;
 }
 
-.context-menu {
+.xml-field .context-menu {
 	-fx-padding: 0;
 	-fx-background-radius: 8px;
 }
 
-.context-menu .menu-item {
+.xml-field .context-menu .menu-item {
 	-fx-background-color: red;
 	-fx-background-radius: 8px;
 }
 
-.context-menu .menu-item > .label {
+.xml-field .context-menu .menu-item > .label {
 	-fx-text-fill: white;
 	-fx-font-weight: bold;
 }
