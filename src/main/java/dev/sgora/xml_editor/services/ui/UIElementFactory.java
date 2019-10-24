@@ -1,19 +1,21 @@
 package dev.sgora.xml_editor.services.ui;
 
-import com.google.inject.Singleton;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UIElementFactory {
 	private static final String TEXT_FIELD_CLASS = "xml-field";
+	private static final String MULTI_TEXT_FIELD_CLASS = "xml-multi-field";
 
 	public static TextField createTextField(String text) {
 		TextField field = new TextField(text);
@@ -21,20 +23,38 @@ public class UIElementFactory {
 		return field;
 	}
 
-	public static void createMultiTextField() {
-
+	public static VBox createMultiTextField(List list) {
+		VBox container = new VBox(5);
+		for (Object element : list)
+			container.getChildren().add(addTextFieldToList(element, container));
+		return container;
 	}
 
-	public static ComboBox createComboBox(Class type) throws NoSuchFieldException, IllegalAccessException {
+	private static HBox addTextFieldToList(Object value, VBox container) {
+		HBox layout = new HBox(5);
+		layout.setAlignment(Pos.CENTER_LEFT);
+		layout.getStyleClass().add(MULTI_TEXT_FIELD_CLASS);
+		TextField textField = createTextField(value.toString());
+		Button removeField = new Button("-");
+		removeField.setOnAction(event -> container.getChildren().remove(layout));
+		Button addField = new Button("+");
+		addField.setOnAction(event -> container.getChildren().add(container.getChildren().indexOf(layout) + 1, addTextFieldToList("", container)));
+		layout.getChildren().addAll(textField, removeField, addField);
+		return layout;
+	}
+
+	public static ComboBox createComboBox(Class type, Object value) throws NoSuchFieldException, IllegalAccessException {
 		ComboBox<String> comboBox = new ComboBox<>();
-		List<String> values = new ArrayList<>();
-		for (Object value : type.getEnumConstants()) {
-			Field field = value.getClass().getDeclaredField("value");
-			field.setAccessible(true);
-			values.add((String) field.get(value));
-		}
-		comboBox.getItems().addAll(values);
+		for (Object constant : type.getEnumConstants())
+			comboBox.getItems().add(getEnumValue(constant));
+		comboBox.setValue(getEnumValue(value));
 		return comboBox;
+	}
+
+	private static String getEnumValue(Object object) throws NoSuchFieldException, IllegalAccessException {
+		Field field = object.getClass().getDeclaredField("value");
+		field.setAccessible(true);
+		return (String) field.get(object);
 	}
 	
 	public void showFieldError(Node node, String errorMessage) {

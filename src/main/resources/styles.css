@@ -1,5 +1,6 @@
 .root {
 	error-color: red;
+	multi-button-size: 20;
 }
 
 .error-field {
@@ -21,4 +22,13 @@
 .xml-field .context-menu .menu-item > .label {
 	-fx-text-fill: white;
 	-fx-font-weight: bold;
+}
+
+.xml-multi-field .button {
+	-fx-min-width: multi-button-size;
+	-fx-max-width: multi-button-size;
+	-fx-min-height: multi-button-size;
+	-fx-max-height: multi-button-size;
+	-fx-background-radius: 50%;
+	-fx-padding: 0;
 }

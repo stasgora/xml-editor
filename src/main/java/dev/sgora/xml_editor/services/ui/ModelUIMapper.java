@@ -58,7 +58,9 @@ public class ModelUIMapper {
 			if(fieldVal instanceof String)
 				box.getChildren().add(UIElementFactory.createTextField((String) fieldVal));
 			else if (field.getType().isEnum())
-				box.getChildren().add(UIElementFactory.createComboBox(field.getType()));
+				box.getChildren().add(UIElementFactory.createComboBox(field.getType(), fieldVal));
+			else if (fieldVal instanceof List)
+				box.getChildren().add(UIElementFactory.createMultiTextField((List) fieldVal));
 			else
 				mapElement(fieldVal, box);
 		}
