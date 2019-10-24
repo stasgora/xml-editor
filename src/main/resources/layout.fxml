@@ -2,6 +2,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.layout.FlowPane?>
 <VBox styleClass="root" fx:controller="dev.sgora.xml_editor.WindowView" xmlns:fx="http://javafx.com/fxml">
 	<MenuBar>
 		<Menu text="File">
@@ -14,20 +15,20 @@
 	<TabPane VBox.vgrow="ALWAYS">
 		<Tab text="Account Information">
 			<ScrollPane>
-				<VBox fx:id="infoRoot" spacing="10">
+				<FlowPane fx:id="infoRoot" columnHalignment="CENTER" hgap="5" vgap="5">
 					<padding>
 						<Insets top="10" left="10" right="10" bottom="10" />
 					</padding>
-				</VBox>
+				</FlowPane>
 			</ScrollPane>
 		</Tab>
 		<Tab text="Transaction History">
 			<ScrollPane>
-				<VBox fx:id="historyRoot" spacing="10">
+				<FlowPane fx:id="historyRoot" columnHalignment="CENTER" hgap="5" vgap="5">
 					<padding>
 						<Insets top="10" left="10" right="10" bottom="10" />
 					</padding>
-				</VBox>
+				</FlowPane>
 			</ScrollPane>
 		</Tab>
 	</TabPane>

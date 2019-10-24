@@ -32,3 +32,8 @@
 	-fx-background-radius: 50%;
 	-fx-padding: 0;
 }
+
+.xml-title {
+	-fx-font-weight: bold;
+	-fx-font-size: 15;
+}

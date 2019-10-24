@@ -8,8 +8,7 @@ import dev.sgora.xml_editor.services.ui.WorkspaceAction;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class WindowView {
@@ -18,8 +17,8 @@ public class WindowView {
 	public MenuItem saveMenuItem;
 	public MenuItem exportMenuItem;
 
-	public VBox infoRoot;
-	public VBox historyRoot;
+	public Pane infoRoot;
+	public Pane historyRoot;
 
 	private Parent root;
 	private Model<AccountStatement> model;

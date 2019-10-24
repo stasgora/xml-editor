@@ -16,11 +16,18 @@ import java.util.stream.Collectors;
 public class UIElementFactory {
 	private static final String TEXT_FIELD_CLASS = "xml-field";
 	private static final String MULTI_TEXT_FIELD_CLASS = "xml-multi-field";
+	private static final String TITLE_CLASS = "xml-title";
 
 	public static TextField createTextField(String text) {
 		TextField field = new TextField(text);
 		field.getStyleClass().add(TEXT_FIELD_CLASS);
 		return field;
+	}
+
+	public static Label createSectionTitle(String title) {
+		var label = new Label(title);
+		label.getStyleClass().add(TITLE_CLASS);
+		return label;
 	}
 
 	public static VBox createMultiTextField(List list) {
