@@ -3,6 +3,7 @@ package dev.sgora.xml_editor;
 import com.google.inject.Inject;
 import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
+import dev.sgora.xml_editor.services.ui.ModelUIMapper;
 import dev.sgora.xml_editor.services.ui.WorkspaceAction;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,27 +13,29 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class WindowView {
-	public VBox mainView;
-
 	public MenuItem newMenuItem;
 	public MenuItem openMenuItem;
 	public MenuItem saveMenuItem;
 	public MenuItem exportMenuItem;
 
-	public TextField testField;
+	public VBox infoRoot;
+	public VBox historyRoot;
 
 	private Parent root;
 	private Model<AccountStatement> model;
 	private WorkspaceAction workspaceAction;
 	private Stage window;
+	private ModelUIMapper uiMapper;
 
 	@Inject
-	void init(Stage window, Parent root, WorkspaceAction workspaceAction, Model<AccountStatement> model) {
+	void init(Stage window, Parent root, WorkspaceAction workspaceAction, Model<AccountStatement> model, ModelUIMapper uiMapper) {
 		this.root = root;
 		this.model = model;
 		this.workspaceAction = workspaceAction;
 		this.window = window;
+		this.uiMapper = uiMapper;
 
+		uiMapper.init(infoRoot, historyRoot);
 		setScene();
 		bindEvents();
 	}
