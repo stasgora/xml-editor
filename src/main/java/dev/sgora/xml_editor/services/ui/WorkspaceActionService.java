@@ -4,10 +4,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
+import dev.sgora.xml_editor.services.ui.dialog.DialogService;
+import dev.sgora.xml_editor.services.ui.dialog.FileChooserAction;
 import dev.sgora.xml_editor.services.validation.ValidationException;
 import dev.sgora.xml_editor.services.validation.ValidationService;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
 import java.io.File;
 

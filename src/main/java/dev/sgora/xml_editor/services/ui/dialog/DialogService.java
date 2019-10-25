@@ -1,4 +1,4 @@
-package dev.sgora.xml_editor.services.ui;
+package dev.sgora.xml_editor.services.ui.dialog;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

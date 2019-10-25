@@ -37,3 +37,8 @@
 	-fx-font-weight: bold;
 	-fx-font-size: 15;
 }
+
+.xml-subtitle {
+	-fx-font-weight: bold;
+	-fx-font-size: 13;
+}

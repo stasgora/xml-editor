@@ -4,9 +4,12 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
+import dev.sgora.xml_editor.services.ui.element.ElementTitleType;
+import dev.sgora.xml_editor.services.ui.element.UIElementFactory;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
@@ -45,24 +48,25 @@ public class ModelUIMapper {
 			for (int i = 0; i < rootFields.length; i++) {
 				rootFields[i].setAccessible(true);
 				Pane root = i < Math.ceil(rootFieldsCount / 2d) ? infoRoot : historyRoot;
-				root.getChildren().add(mapComplexElement(rootFields[i].get(model.getValue())));
+				root.getChildren().add(mapComplexElement(rootFields[i].get(model.getValue()), true));
 			}
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			logger.log(Level.WARNING, "Mapping model failed", e);
 		}
 	}
 
-	private Node mapComplexElement(Object element) throws IllegalAccessException, NoSuchFieldException {
+	private Node mapComplexElement(Object element, boolean root) throws IllegalAccessException, NoSuchFieldException {
 		Class modelType = element.getClass();
 		VBox elementContainer = new VBox(5);
 		elementContainer.setPadding(new Insets(0, 5, 5, 0));
 		ObservableList<Node> children = elementContainer.getChildren();
-		children.add(UIElementFactory.createSectionTitle(modelType.getSimpleName().replaceAll("(.)([A-Z])", "$1 $2")));
+		if(root)
+			children.add(UIElementFactory.createElementTitle(modelType.getSimpleName(), ElementTitleType.ROOT));
 
 		for (Field field : modelType.getDeclaredFields()) {
 			field.setAccessible(true);
 			Object value = field.get(element);
-			children.add(mapElement(value));
+			children.addAll(UIElementFactory.createElementTitle(field.getName(), ElementTitleType.SUB), mapElement(value));
 		}
 		return elementContainer;
 	}
@@ -79,9 +83,16 @@ public class ModelUIMapper {
 		if (element instanceof List) {
 			VBox listContainer = new VBox(5);
 			for (Object listElement : (List) element)
-				listContainer.getChildren().add(UIElementFactory.wrapFieldAsListElement(mapElement(listElement), listContainer));
+				listContainer.getChildren().add(UIElementFactory.wrapFieldAsListElement(mapElement(listElement), () -> {
+					try {
+						return mapComplexElement(UIElementFactory.createEmptyModel(listElement.getClass()), false);
+					} catch (IllegalAccessException | NoSuchFieldException e) {
+						logger.log(Level.WARNING, "Mapping model failed", e);
+						return null;
+					}
+				}, listContainer));
 			return listContainer;
 		}
-		return mapComplexElement(element);
+		return mapComplexElement(element, false);
 	}
 }
