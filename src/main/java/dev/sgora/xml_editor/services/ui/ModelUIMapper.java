@@ -4,10 +4,13 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.logging.Level;
@@ -41,29 +44,44 @@ public class ModelUIMapper {
 		try {
 			for (int i = 0; i < rootFields.length; i++) {
 				rootFields[i].setAccessible(true);
-				mapElement(rootFields[i].get(model.getValue()), i < Math.ceil(rootFieldsCount / 2d) ? infoRoot : historyRoot);
+				Pane root = i < Math.ceil(rootFieldsCount / 2d) ? infoRoot : historyRoot;
+				root.getChildren().add(mapComplexElement(rootFields[i].get(model.getValue())));
 			}
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			logger.log(Level.WARNING, "Mapping model failed", e);
 		}
 	}
 
-	private void mapElement(Object element, Pane parent) throws IllegalAccessException, NoSuchFieldException {
+	private Node mapComplexElement(Object element) throws IllegalAccessException, NoSuchFieldException {
 		Class modelType = element.getClass();
-		VBox box = new VBox(5, UIElementFactory.createSectionTitle(modelType.getSimpleName().replaceAll("(.)([A-Z])", "$1 $2")));
-		box.setPadding(new Insets(5, 5, 5, 5));
+		VBox box = new VBox(5);
+		box.setPadding(new Insets(0, 5, 5, 0));
+		ObservableList<Node> children = box.getChildren();
+		children.add(UIElementFactory.createSectionTitle(modelType.getSimpleName().replaceAll("(.)([A-Z])", "$1 $2")));
+
 		for (Field field : modelType.getDeclaredFields()) {
 			field.setAccessible(true);
 			Object fieldVal = field.get(element);
-			if(fieldVal instanceof String)
-				box.getChildren().add(UIElementFactory.createTextField((String) fieldVal));
-			else if (field.getType().isEnum())
-				box.getChildren().add(UIElementFactory.createComboBox(field.getType(), fieldVal));
-			else if (fieldVal instanceof List)
-				box.getChildren().add(UIElementFactory.createMultiTextField((List) fieldVal));
-			else
-				mapElement(fieldVal, box);
+			children.add(mapElement(fieldVal));
 		}
-		parent.getChildren().add(box);
+		return box;
+	}
+
+	private Node mapElement(Object fieldVal) throws NoSuchFieldException, IllegalAccessException {
+		if(fieldVal instanceof String)
+			return UIElementFactory.createTextField((String) fieldVal);
+		else if(fieldVal instanceof Number)
+			return UIElementFactory.createTextField(fieldVal.toString());
+		else if(fieldVal instanceof XMLGregorianCalendar)
+			return UIElementFactory.createDateField((XMLGregorianCalendar) fieldVal);
+		else if (fieldVal.getClass().isEnum())
+			return UIElementFactory.createComboBox(fieldVal.getClass(), fieldVal);
+		else if (fieldVal instanceof List) {
+			VBox container = new VBox(5);
+			for (Object listElement : (List) fieldVal)
+				container.getChildren().add(UIElementFactory.wrapFieldAsListElement(mapElement(listElement), container));
+			return container;
+		} else
+			return mapComplexElement(fieldVal);
 	}
 }

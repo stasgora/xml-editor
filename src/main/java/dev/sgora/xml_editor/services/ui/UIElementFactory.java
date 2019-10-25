@@ -7,11 +7,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDate;
 
 public class UIElementFactory {
 	private static final String TEXT_FIELD_CLASS = "xml-field";
@@ -30,23 +28,21 @@ public class UIElementFactory {
 		return label;
 	}
 
-	public static VBox createMultiTextField(List list) {
-		VBox container = new VBox(5);
-		for (Object element : list)
-			container.getChildren().add(addTextFieldToList(element, container));
-		return container;
+	public static DatePicker createDateField(XMLGregorianCalendar date) {
+		return new DatePicker(LocalDate.of(date.getYear(), date.getMonth(), date.getDay()));
 	}
 
-	private static HBox addTextFieldToList(Object value, VBox container) {
+	public static HBox wrapFieldAsListElement(Node field, VBox container) {
 		HBox layout = new HBox(5);
 		layout.setAlignment(Pos.CENTER_LEFT);
 		layout.getStyleClass().add(MULTI_TEXT_FIELD_CLASS);
-		TextField textField = createTextField(value.toString());
 		Button removeField = new Button("-");
 		removeField.setOnAction(event -> container.getChildren().remove(layout));
+		removeField.setTooltip(new Tooltip("Remove item"));
 		Button addField = new Button("+");
-		addField.setOnAction(event -> container.getChildren().add(container.getChildren().indexOf(layout) + 1, addTextFieldToList("", container)));
-		layout.getChildren().addAll(textField, removeField, addField);
+		addField.setTooltip(new Tooltip("Add item after"));
+		//addField.setOnAction(event -> container.getChildren().add(container.getChildren().indexOf(layout) + 1, wrapFieldAsListElement(, container)));
+		layout.getChildren().addAll(field, removeField, addField);
 		return layout;
 	}
 

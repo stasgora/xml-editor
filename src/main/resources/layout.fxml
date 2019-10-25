@@ -14,8 +14,8 @@
 	</MenuBar>
 	<TabPane VBox.vgrow="ALWAYS">
 		<Tab text="Account Information">
-			<ScrollPane>
-				<FlowPane fx:id="infoRoot" columnHalignment="CENTER" hgap="5" vgap="5">
+			<ScrollPane fitToWidth="true" fitToHeight="true">
+				<FlowPane fx:id="infoRoot" alignment="TOP_CENTER" hgap="5" vgap="5">
 					<padding>
 						<Insets top="10" left="10" right="10" bottom="10" />
 					</padding>
@@ -23,8 +23,8 @@
 			</ScrollPane>
 		</Tab>
 		<Tab text="Transaction History">
-			<ScrollPane>
-				<FlowPane fx:id="historyRoot" columnHalignment="CENTER" hgap="5" vgap="5">
+			<ScrollPane fitToWidth="true" fitToHeight="true">
+				<FlowPane fx:id="historyRoot" alignment="TOP_CENTER" hgap="5" vgap="5">
 					<padding>
 						<Insets top="10" left="10" right="10" bottom="10" />
 					</padding>
