@@ -54,34 +54,34 @@ public class ModelUIMapper {
 
 	private Node mapComplexElement(Object element) throws IllegalAccessException, NoSuchFieldException {
 		Class modelType = element.getClass();
-		VBox box = new VBox(5);
-		box.setPadding(new Insets(0, 5, 5, 0));
-		ObservableList<Node> children = box.getChildren();
+		VBox elementContainer = new VBox(5);
+		elementContainer.setPadding(new Insets(0, 5, 5, 0));
+		ObservableList<Node> children = elementContainer.getChildren();
 		children.add(UIElementFactory.createSectionTitle(modelType.getSimpleName().replaceAll("(.)([A-Z])", "$1 $2")));
 
 		for (Field field : modelType.getDeclaredFields()) {
 			field.setAccessible(true);
-			Object fieldVal = field.get(element);
-			children.add(mapElement(fieldVal));
+			Object value = field.get(element);
+			children.add(mapElement(value));
 		}
-		return box;
+		return elementContainer;
 	}
 
-	private Node mapElement(Object fieldVal) throws NoSuchFieldException, IllegalAccessException {
-		if(fieldVal instanceof String)
-			return UIElementFactory.createTextField((String) fieldVal);
-		else if(fieldVal instanceof Number)
-			return UIElementFactory.createTextField(fieldVal.toString());
-		else if(fieldVal instanceof XMLGregorianCalendar)
-			return UIElementFactory.createDateField((XMLGregorianCalendar) fieldVal);
-		else if (fieldVal.getClass().isEnum())
-			return UIElementFactory.createComboBox(fieldVal.getClass(), fieldVal);
-		else if (fieldVal instanceof List) {
-			VBox container = new VBox(5);
-			for (Object listElement : (List) fieldVal)
-				container.getChildren().add(UIElementFactory.wrapFieldAsListElement(mapElement(listElement), container));
-			return container;
-		} else
-			return mapComplexElement(fieldVal);
+	private Node mapElement(Object element) throws NoSuchFieldException, IllegalAccessException {
+		if(element instanceof String)
+			return UIElementFactory.createTextField((String) element);
+		if(element instanceof Number)
+			return UIElementFactory.createTextField(element.toString());
+		if(element instanceof XMLGregorianCalendar)
+			return UIElementFactory.createDateField((XMLGregorianCalendar) element);
+		if (element.getClass().isEnum())
+			return UIElementFactory.createComboBox(element.getClass(), element);
+		if (element instanceof List) {
+			VBox listContainer = new VBox(5);
+			for (Object listElement : (List) element)
+				listContainer.getChildren().add(UIElementFactory.wrapFieldAsListElement(mapElement(listElement), listContainer));
+			return listContainer;
+		}
+		return mapComplexElement(element);
 	}
 }
