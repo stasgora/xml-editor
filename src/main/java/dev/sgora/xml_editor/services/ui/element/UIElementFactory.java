@@ -49,7 +49,10 @@ public class UIElementFactory {
 		layout.setAlignment(Pos.CENTER_LEFT);
 		layout.getStyleClass().add(MULTI_TEXT_FIELD_CLASS);
 		Button removeField = new Button("-");
-		removeField.setOnAction(event -> container.getChildren().remove(layout));
+		removeField.setOnAction(event -> {
+			if(container.getChildren().size() > 1)
+				container.getChildren().remove(layout);
+		});
 		removeField.setTooltip(new Tooltip("Remove item"));
 		Button addField = new Button("+");
 		addField.setTooltip(new Tooltip("Add item after"));
@@ -74,7 +77,7 @@ public class UIElementFactory {
 
 	public static <M> M createEmptyModel(Class<M> modelClass) {
 		try {
-			return modelClass.getPackageName().startsWith("dev.sgora") ? createLocalModel(modelClass) : createRemoteModel(modelClass);
+			return isClassInternal(modelClass) ? createLocalModel(modelClass) : createRemoteModel(modelClass);
 		} catch (InstantiationException | InvocationTargetException | IllegalAccessException | DatatypeConfigurationException e) {
 			logger.log(Level.WARNING, "Creating model instance failed", e);
 			return null;
@@ -109,6 +112,10 @@ public class UIElementFactory {
 		} else if(XMLGregorianCalendar.class.isAssignableFrom(modelClass))
 			modelInstance = (M) DatatypeFactory.newInstance().newXMLGregorianCalendarDate(2000, 1, 1, 0);
 		return modelInstance;
+	}
+
+	private static boolean isClassInternal(Class clazz) {
+		return clazz.getPackageName().startsWith("dev.sgora");
 	}
 
 	private static String getEnumValue(Object object) throws NoSuchFieldException, IllegalAccessException {

@@ -4,12 +4,14 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
+import dev.sgora.xml_editor.services.ui.element.ElementLayout;
 import dev.sgora.xml_editor.services.ui.element.ElementTitleType;
 import dev.sgora.xml_editor.services.ui.element.UIElementFactory;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
@@ -51,17 +53,17 @@ public class ModelUIMapper {
 			for (int i = 0; i < rootFields.length; i++) {
 				rootFields[i].setAccessible(true);
 				Pane root = i < Math.ceil(rootFieldsCount / 2d) ? infoRoot : historyRoot;
-				root.getChildren().add(mapComplexElement(rootFields[i].get(model.getValue()), true));
+				root.getChildren().add(mapComplexElement(rootFields[i].get(model.getValue()), ElementLayout.VERTICAL, true, true));
 			}
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			logger.log(Level.WARNING, "Mapping model failed", e);
 		}
 	}
 
-	private Node mapComplexElement(Object element, boolean root) throws IllegalAccessException, NoSuchFieldException {
+	private Node mapComplexElement(Object element, ElementLayout layout, boolean addLabel, boolean root) throws IllegalAccessException, NoSuchFieldException {
 		Class modelType = element.getClass();
-		VBox elementContainer = new VBox(5);
-		elementContainer.setPadding(new Insets(0, 5, 5, 0));
+		Pane elementContainer = layout == ElementLayout.VERTICAL ? new VBox(5) : new HBox(5);
+		elementContainer.setPadding(new Insets(5, 0, 5, 0));
 		ObservableList<Node> children = elementContainer.getChildren();
 		if(root)
 			children.add(UIElementFactory.createElementTitle(modelType.getSimpleName(), ElementTitleType.ROOT));
@@ -69,12 +71,21 @@ public class ModelUIMapper {
 		for (Field field : modelType.getDeclaredFields()) {
 			field.setAccessible(true);
 			Object value = field.get(element);
-			children.addAll(UIElementFactory.createElementTitle(field.getName(), ElementTitleType.SUB), mapElement(value));
+			Node child = mapElement(value, ElementLayout.VERTICAL, addLabel);
+			if(!addLabel) {
+				children.add(child);
+				continue;
+			}
+			Label label = UIElementFactory.createElementTitle(field.getName(), ElementTitleType.SUB);
+			if(layout == ElementLayout.VERTICAL)
+				children.addAll(label, child);
+			else
+				children.add(new VBox(5, label, child));
 		}
 		return elementContainer;
 	}
 
-	private Node mapElement(Object element) throws NoSuchFieldException, IllegalAccessException {
+	private Node mapElement(Object element, ElementLayout layout, boolean addLabel) throws NoSuchFieldException, IllegalAccessException {
 		if(element instanceof String)
 			return UIElementFactory.createTextField((String) element);
 		if(element instanceof Number)
@@ -85,21 +96,24 @@ public class ModelUIMapper {
 			return UIElementFactory.createComboBox(element.getClass(), element);
 		if (element instanceof List) {
 			VBox listContainer = new VBox(5);
-			for (Object listElement : (List) element)
-				listContainer.getChildren().add(UIElementFactory.wrapFieldAsListElement(mapElement(listElement), () -> {
+			List list = (List) element;
+			for (int i = 0; i < list.size(); i++) {
+				Object listElement = list.get(i);
+				listContainer.getChildren().add(UIElementFactory.wrapFieldAsListElement(mapElement(listElement, ElementLayout.HORIZONTAL, i == 0), () -> {
 					try {
-						return mapComplexElement(UIElementFactory.createEmptyModel(listElement.getClass()), false);
+						return mapElement(UIElementFactory.createEmptyModel(listElement.getClass()), ElementLayout.HORIZONTAL, false);
 					} catch (IllegalAccessException | NoSuchFieldException e) {
 						logger.log(Level.WARNING, "Mapping model failed", e);
 						return null;
 					}
 				}, listContainer));
+			}
 			return listContainer;
 		}
-		return mapComplexElement(element, false);
+		return mapComplexElement(element, layout, addLabel, false);
 	}
 
-	public void clearElements() {
+	private void clearElements() {
 		infoRoot.getChildren().clear();
 		historyRoot.getChildren().clear();
 	}
