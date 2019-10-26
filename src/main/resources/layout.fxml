@@ -8,8 +8,11 @@
 		<Menu text="File">
 			<MenuItem fx:id="newMenuItem" text="New" accelerator="Ctrl+N"/>
 			<MenuItem fx:id="openMenuItem" text="Open" accelerator="Ctrl+O"/>
+			<SeparatorMenuItem/>
 			<MenuItem fx:id="saveMenuItem" text="Save" accelerator="Ctrl+S"/>
 			<MenuItem fx:id="exportMenuItem" visible="false" text="Export to PDF" accelerator="Ctrl+E"/>
+			<MenuItem fx:id="closeMenuItem" text="Close" accelerator="Ctrl+Q"/>
+			<MenuItem fx:id="quitMenuItem" text="Quit" accelerator="Ctrl+Shift+Q"/>
 		</Menu>
 	</MenuBar>
 	<TabPane VBox.vgrow="ALWAYS">

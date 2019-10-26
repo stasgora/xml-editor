@@ -6,6 +6,7 @@ import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
 import dev.sgora.xml_editor.services.ui.dialog.DialogService;
 import dev.sgora.xml_editor.services.ui.dialog.FileChooserAction;
+import dev.sgora.xml_editor.services.ui.element.UIElementFactory;
 import dev.sgora.xml_editor.services.validation.ValidationException;
 import dev.sgora.xml_editor.services.validation.ValidationService;
 import javafx.stage.FileChooser;
@@ -44,6 +45,8 @@ public class WorkspaceActionService implements WorkspaceAction {
 
 	@Override
 	public void newDocumentAction() {
+		model.setValue(UIElementFactory.createEmptyModel(AccountStatement.class));
+		model.notifyListeners();
 	}
 
 	@Override
@@ -51,6 +54,12 @@ public class WorkspaceActionService implements WorkspaceAction {
 		File location = dialogService.showFileChooser(FileChooserAction.SAVE_DIALOG, "Save Document", filter);
 		if(location == null)
 			return;
+	}
 
+	@Override
+	public void closeDocumentAction() {
+		model.setValue(null);
+		model.setFile(null);
+		model.notifyListeners();
 	}
 }

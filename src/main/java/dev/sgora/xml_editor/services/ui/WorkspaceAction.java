@@ -6,4 +6,6 @@ public interface WorkspaceAction {
 	void newDocumentAction();
 
 	void saveDocumentAction();
+
+	void closeDocumentAction();
 }

@@ -41,6 +41,9 @@ public class ModelUIMapper {
 	}
 
 	private void mapModelToUI() {
+		clearElements();
+		if(model.getValue() == null)
+			return;
 		Class modelType = model.getValue().getClass();
 		Field[] rootFields = modelType.getDeclaredFields();
 		rootFieldsCount = rootFields.length;
@@ -94,5 +97,10 @@ public class ModelUIMapper {
 			return listContainer;
 		}
 		return mapComplexElement(element, false);
+	}
+
+	public void clearElements() {
+		infoRoot.getChildren().clear();
+		historyRoot.getChildren().clear();
 	}
 }

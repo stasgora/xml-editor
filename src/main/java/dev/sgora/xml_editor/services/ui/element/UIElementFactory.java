@@ -44,10 +44,6 @@ public class UIElementFactory {
 		return new DatePicker(LocalDate.of(date.getYear(), date.getMonth(), date.getDay()));
 	}
 
-	public static HBox wrapFieldWithName(Node field, String name) {
-		return new HBox(5, new Label(transformFieldName(name)), field);
-	}
-
 	public static HBox wrapFieldAsListElement(Node field, Supplier<Node> fieldSupplier, VBox container) {
 		HBox layout = new HBox(5);
 		layout.setAlignment(Pos.CENTER_LEFT);

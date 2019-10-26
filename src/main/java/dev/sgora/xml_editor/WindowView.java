@@ -5,6 +5,8 @@ import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
 import dev.sgora.xml_editor.services.ui.ModelUIMapper;
 import dev.sgora.xml_editor.services.ui.WorkspaceAction;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
@@ -16,6 +18,8 @@ public class WindowView {
 	public MenuItem openMenuItem;
 	public MenuItem saveMenuItem;
 	public MenuItem exportMenuItem;
+	public MenuItem closeMenuItem;
+	public MenuItem quitMenuItem;
 
 	public Pane infoRoot;
 	public Pane historyRoot;
@@ -24,7 +28,6 @@ public class WindowView {
 	private Model<AccountStatement> model;
 	private WorkspaceAction workspaceAction;
 	private Stage window;
-	private ModelUIMapper uiMapper;
 
 	@Inject
 	void init(Stage window, Parent root, WorkspaceAction workspaceAction, Model<AccountStatement> model, ModelUIMapper uiMapper) {
@@ -32,7 +35,6 @@ public class WindowView {
 		this.model = model;
 		this.workspaceAction = workspaceAction;
 		this.window = window;
-		this.uiMapper = uiMapper;
 
 		uiMapper.init(infoRoot, historyRoot);
 		setScene();
@@ -43,13 +45,16 @@ public class WindowView {
 		newMenuItem.setOnAction(event -> workspaceAction.newDocumentAction());
 		openMenuItem.setOnAction(event -> workspaceAction.openDocumentAction());
 		saveMenuItem.setOnAction(event -> workspaceAction.saveDocumentAction());
+		closeMenuItem.setOnAction(event -> workspaceAction.closeDocumentAction());
+		quitMenuItem.setOnAction(event -> Platform.exit());
 
 		model.addListener(() -> {
 			String windowName = "XML Editor";
 			if(model.getFile() != null) {
 				String fileName = model.getFile().getName();
 				windowName = fileName.substring(0, fileName.length() - 4) + " - " + windowName;
-			}
+			} else if(model.getValue() != null)
+				windowName = "Untitled - " + windowName;
 			window.setTitle(windowName);
 		});
 	}
