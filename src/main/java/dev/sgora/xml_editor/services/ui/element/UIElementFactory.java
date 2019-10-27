@@ -8,18 +8,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,9 +24,10 @@ public class UIElementFactory {
 	private static final String TEXT_FIELD_CLASS = "xml-field";
 	private static final String MULTI_TEXT_FIELD_CLASS = "xml-multi-field";
 
-	public static TextField createTextField(String text) {
+	public static TextField createTextField(String text, BiConsumer<Node, Object> setValue) {
 		TextField field = new TextField(text);
 		field.getStyleClass().add(TEXT_FIELD_CLASS);
+		field.textProperty().addListener((observable, oldVal, newVal) -> setValue.accept(field, newVal));
 		return field;
 	}
 
@@ -42,8 +37,28 @@ public class UIElementFactory {
 		return label;
 	}
 
-	public static DatePicker createDateField(XMLGregorianCalendar date) {
-		return new DatePicker(LocalDate.of(date.getYear(), date.getMonth(), date.getDay()));
+	public static DatePicker createDateField(XMLGregorianCalendar date, BiConsumer<Node, Object> setValue) {
+		DatePicker datePicker = new DatePicker(LocalDate.of(date.getYear(), date.getMonth(), date.getDay()));
+		datePicker.valueProperty().addListener((observable, oldVal, newVal) -> {
+			try {
+				setValue.accept(datePicker, EmptyModelFactory.createXMLCalendar(newVal));
+			} catch (DatatypeConfigurationException e) {
+				logger.log(Level.WARNING, "Creating date failed", e);
+			}
+		});
+		return datePicker;
+	}
+
+	public static ComboBox createComboBox(Class type, Object value, BiConsumer<Node, Object> setValue)
+			throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+		ComboBox<String> comboBox = new ComboBox<>();
+		Map<String, String> enumValueMap = getEnumFieldMap(type.getEnumConstants());
+		comboBox.getItems().addAll(enumValueMap.keySet());
+		comboBox.setValue(getEnumField(value, EnumField.VALUE));
+		comboBox.setUserData(enumValueMap);
+		comboBox.valueProperty().addListener((observable, oldVal, newVal) -> setValue.accept(comboBox,
+				Enum.valueOf((Class<? extends Enum>) type, ((Map<String, String>) comboBox.getUserData()).get(newVal))));
+		return comboBox;
 	}
 
 	public static HBox wrapFieldAsListElement(Node field, Supplier<Node> fieldSupplier, VBox container) {
@@ -64,58 +79,11 @@ public class UIElementFactory {
 		return layout;
 	}
 
-	public static ComboBox createComboBox(Class type, Object value) throws NoSuchFieldException, IllegalAccessException {
-		ComboBox<String> comboBox = new ComboBox<>();
-		for (Object constant : type.getEnumConstants())
-			comboBox.getItems().add(getEnumValue(constant));
-		comboBox.setValue(getEnumValue(value));
-		return comboBox;
-	}
-
 	public static String transformFieldName(String fieldName) {
 		fieldName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
 		return fieldName.replaceAll("(.)([A-Z])", "$1 $2");
 	}
 
-	public static <M> M createEmptyModel(Class<M> modelClass, Type type) {
-		try {
-			return isClassInternal(modelClass) ? createLocalModel(modelClass) : createRemoteModel(modelClass, type);
-		} catch (InstantiationException | InvocationTargetException | IllegalAccessException | DatatypeConfigurationException e) {
-			logger.log(Level.WARNING, "Creating model instance failed", e);
-			return null;
-		}
-	}
-
-	private static <M> M createLocalModel(Class<M> modelClass) throws IllegalAccessException, InvocationTargetException, InstantiationException {
-		M modelInstance;
-		if(modelClass.isEnum())
-			modelInstance = modelClass.getEnumConstants()[0];
-		else {
-			modelInstance = (M) modelClass.getDeclaredConstructors()[0].newInstance();
-			for (Field field : modelClass.getDeclaredFields()) {
-				field.setAccessible(true);
-				field.set(modelInstance, createEmptyModel(field.getType(), field.getGenericType()));
-			}
-		}
-		return modelInstance;
-	}
-
-	private static <M> M createRemoteModel(Class<M> modelClass, Type type) throws DatatypeConfigurationException {
-		M modelInstance = null;
-		if(String.class.isAssignableFrom(modelClass))
-			modelInstance = (M) "";
-		else if(List.class.isAssignableFrom(modelClass)) {
-			Type listType = ((ParameterizedType) type).getActualTypeArguments()[0];
-			modelInstance = (M) Collections.singletonList(createEmptyModel((Class) listType, listType));
-		} else if(Number.class.isAssignableFrom(modelClass)) {
-			if(BigInteger.class.isAssignableFrom(modelClass))
-				modelInstance = (M) BigInteger.ZERO;
-			else if(BigDecimal.class.isAssignableFrom(modelClass))
-				modelInstance = (M) BigDecimal.ZERO;
-		} else if(XMLGregorianCalendar.class.isAssignableFrom(modelClass))
-			modelInstance = (M) DatatypeFactory.newInstance().newXMLGregorianCalendarDate(2000, 1, 1, 0);
-		return modelInstance;
-	}
 
 	public static VBox createAlignedVBox(Pos alignment, int spacing, Node... nodes) {
 		VBox box = new VBox(spacing, nodes);
@@ -123,14 +91,15 @@ public class UIElementFactory {
 		return box;
 	}
 
-	private static boolean isClassInternal(Class clazz) {
-		return clazz.getPackageName().startsWith("dev.sgora");
+	private static Map<String, String> getEnumFieldMap(Object[] values) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+		Map<String, String> map = new HashMap<>();
+		for (Object value : values)
+			map.put(getEnumField(value, EnumField.VALUE), getEnumField(value, EnumField.NAME));
+		return map;
 	}
 
-	private static String getEnumValue(Object object) throws NoSuchFieldException, IllegalAccessException {
-		Field field = object.getClass().getDeclaredField("value");
-		field.setAccessible(true);
-		return (String) field.get(object);
+	private static String getEnumField(Object object, EnumField fieldType) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+		return (String) object.getClass().getMethod(fieldType.name).invoke(object);
 	}
 	
 	public void showFieldError(Node node, String errorMessage) {

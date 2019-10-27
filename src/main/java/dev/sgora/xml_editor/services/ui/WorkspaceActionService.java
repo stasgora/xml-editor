@@ -6,6 +6,7 @@ import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
 import dev.sgora.xml_editor.services.ui.dialog.DialogService;
 import dev.sgora.xml_editor.services.ui.dialog.FileChooserAction;
+import dev.sgora.xml_editor.services.ui.element.EmptyModelFactory;
 import dev.sgora.xml_editor.services.ui.element.UIElementFactory;
 import dev.sgora.xml_editor.services.validation.ValidationException;
 import dev.sgora.xml_editor.services.validation.ValidationService;
@@ -45,7 +46,7 @@ public class WorkspaceActionService implements WorkspaceAction {
 
 	@Override
 	public void newDocumentAction() {
-		model.setValue(UIElementFactory.createEmptyModel(AccountStatement.class, null));
+		model.setValue(EmptyModelFactory.createEmptyModel(AccountStatement.class, null));
 		model.notifyListeners();
 	}
 
