@@ -60,7 +60,7 @@ public class WindowView {
 	}
 
 	private void setScene() {
-		Scene scene = new Scene(root, 800, 500);
+		Scene scene = new Scene(root, 1000, 600);
 		scene.getStylesheets().add(XMLEditor.class.getResource("/styles.css").toExternalForm());
 		window.setScene(scene);
 	}

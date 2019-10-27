@@ -9,6 +9,7 @@ import dev.sgora.xml_editor.services.ui.element.ElementTitleType;
 import dev.sgora.xml_editor.services.ui.element.UIElementFactory;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -62,17 +63,20 @@ public class ModelUIMapper {
 
 	private Node mapComplexElement(Object element, ElementLayout layout, boolean addLabel, boolean root) throws IllegalAccessException, NoSuchFieldException {
 		Class modelType = element.getClass();
-		Pane elementContainer = layout == ElementLayout.VERTICAL ? new VBox(5) : new HBox(5);
-		elementContainer.setPadding(new Insets(5, 0, 5, 0));
+		Pane elementContainer = layout == ElementLayout.VERTICAL ? UIElementFactory.createAlignedVBox(Pos.TOP_LEFT, 5) : new HBox(10);
+		elementContainer.setPadding(new Insets(10, 0, 10, 0));
 		ObservableList<Node> children = elementContainer.getChildren();
-		if(root)
+		if(root) {
 			children.add(UIElementFactory.createElementTitle(modelType.getSimpleName(), ElementTitleType.ROOT));
+			if(layout == ElementLayout.VERTICAL)
+				((VBox) elementContainer).setAlignment(Pos.TOP_CENTER);
+		}
 
 		for (Field field : modelType.getDeclaredFields()) {
 			field.setAccessible(true);
 			Object value = field.get(element);
 			Node child = mapElement(value, ElementLayout.VERTICAL, addLabel);
-			if(!addLabel) {
+			if(!addLabel || value instanceof List) {
 				children.add(child);
 				continue;
 			}
@@ -80,7 +84,7 @@ public class ModelUIMapper {
 			if(layout == ElementLayout.VERTICAL)
 				children.addAll(label, child);
 			else
-				children.add(new VBox(5, label, child));
+				children.add(UIElementFactory.createAlignedVBox(Pos.TOP_CENTER, 5, label, child));
 		}
 		return elementContainer;
 	}
@@ -95,13 +99,13 @@ public class ModelUIMapper {
 		if (element.getClass().isEnum())
 			return UIElementFactory.createComboBox(element.getClass(), element);
 		if (element instanceof List) {
-			VBox listContainer = new VBox(5);
+			VBox listContainer = UIElementFactory.createAlignedVBox(Pos.TOP_CENTER, 5);
 			List list = (List) element;
 			for (int i = 0; i < list.size(); i++) {
 				Object listElement = list.get(i);
 				listContainer.getChildren().add(UIElementFactory.wrapFieldAsListElement(mapElement(listElement, ElementLayout.HORIZONTAL, i == 0), () -> {
 					try {
-						return mapElement(UIElementFactory.createEmptyModel(listElement.getClass()), ElementLayout.HORIZONTAL, false);
+						return mapElement(UIElementFactory.createEmptyModel(listElement.getClass(), null), ElementLayout.HORIZONTAL, false);
 					} catch (IllegalAccessException | NoSuchFieldException e) {
 						logger.log(Level.WARNING, "Mapping model failed", e);
 						return null;

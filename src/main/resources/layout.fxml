@@ -18,18 +18,18 @@
 	<TabPane VBox.vgrow="ALWAYS">
 		<Tab text="Account Information">
 			<ScrollPane fitToWidth="true" fitToHeight="true">
-				<FlowPane fx:id="infoRoot" alignment="TOP_CENTER" hgap="5" vgap="5">
+				<FlowPane fx:id="infoRoot" alignment="CENTER" hgap="30" vgap="10">
 					<padding>
-						<Insets top="10" left="10" right="10" bottom="10" />
+						<Insets top="10" left="50" right="50" bottom="10" />
 					</padding>
 				</FlowPane>
 			</ScrollPane>
 		</Tab>
 		<Tab text="Transaction History">
 			<ScrollPane fitToWidth="true" fitToHeight="true">
-				<FlowPane fx:id="historyRoot" alignment="TOP_CENTER" hgap="5" vgap="5">
+				<FlowPane fx:id="historyRoot" alignment="CENTER" hgap="30" vgap="10">
 					<padding>
-						<Insets top="10" left="10" right="10" bottom="10" />
+						<Insets top="10" left="50" right="50" bottom="10" />
 					</padding>
 				</FlowPane>
 			</ScrollPane>

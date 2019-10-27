@@ -45,7 +45,7 @@ public class WorkspaceActionService implements WorkspaceAction {
 
 	@Override
 	public void newDocumentAction() {
-		model.setValue(UIElementFactory.createEmptyModel(AccountStatement.class));
+		model.setValue(UIElementFactory.createEmptyModel(AccountStatement.class, null));
 		model.notifyListeners();
 	}
 
