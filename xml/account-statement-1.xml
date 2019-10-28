@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<accountStatement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/main/resources/account-statement.xsd">
+<accountStatement>
 	<bank>
 		<name type="S.A.">Plus Bank</name>
 		<address>

@@ -21,6 +21,8 @@ public class WindowView {
 	public MenuItem closeMenuItem;
 	public MenuItem quitMenuItem;
 
+	public MenuItem validateMenuItem;
+
 	public Pane infoRoot;
 	public Pane historyRoot;
 
@@ -47,6 +49,8 @@ public class WindowView {
 		saveMenuItem.setOnAction(event -> workspaceAction.saveDocumentAction());
 		closeMenuItem.setOnAction(event -> workspaceAction.closeDocumentAction());
 		quitMenuItem.setOnAction(event -> Platform.exit());
+
+		validateMenuItem.setOnAction(event -> workspaceAction.validateDocumentAction());
 
 		model.addListener(() -> {
 			String windowName = "XML Editor";

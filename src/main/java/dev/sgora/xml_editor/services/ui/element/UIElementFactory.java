@@ -1,5 +1,7 @@
 package dev.sgora.xml_editor.services.ui.element;
 
+import dev.sgora.xml_editor.element.ElementTitleType;
+import dev.sgora.xml_editor.element.EnumField;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;

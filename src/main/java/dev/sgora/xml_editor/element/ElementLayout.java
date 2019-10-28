@@ -1,4 +1,4 @@
-package dev.sgora.xml_editor.services.ui.element;
+package dev.sgora.xml_editor.element;
 
 public enum ElementLayout {
 	VERTICAL, HORIZONTAL

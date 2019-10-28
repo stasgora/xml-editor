@@ -8,4 +8,6 @@ public interface WorkspaceAction {
 	void saveDocumentAction();
 
 	void closeDocumentAction();
+
+	void validateDocumentAction();
 }

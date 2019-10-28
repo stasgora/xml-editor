@@ -63,4 +63,9 @@ public class WorkspaceActionService implements WorkspaceAction {
 		model.setFile(null);
 		model.notifyListeners();
 	}
+
+	@Override
+	public void validateDocumentAction() {
+		validationService.validateXML();
+	}
 }

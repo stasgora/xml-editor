@@ -14,9 +14,12 @@
 			<MenuItem fx:id="closeMenuItem" text="Close" accelerator="Ctrl+Q"/>
 			<MenuItem fx:id="quitMenuItem" text="Quit" accelerator="Ctrl+Shift+Q"/>
 		</Menu>
+		<Menu text="Debug">
+			<MenuItem fx:id="validateMenuItem" text="Validate" accelerator="Ctrl+R"/>
+		</Menu>
 	</MenuBar>
 	<TabPane VBox.vgrow="ALWAYS">
-		<Tab text="Account Information">
+		<Tab text="Account Information" closable="false">
 			<ScrollPane fitToWidth="true" fitToHeight="true">
 				<FlowPane fx:id="infoRoot" alignment="CENTER" hgap="30" vgap="10">
 					<padding>
@@ -25,7 +28,7 @@
 				</FlowPane>
 			</ScrollPane>
 		</Tab>
-		<Tab text="Transaction History">
+		<Tab text="Transaction History" closable="false">
 			<ScrollPane fitToWidth="true" fitToHeight="true">
 				<FlowPane fx:id="historyRoot" alignment="CENTER" hgap="30" vgap="10">
 					<padding>
