@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import dev.sgora.xml_editor.XMLEditor;
 import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.ObjectFactory;
+import dev.sgora.xml_editor.services.ui.element.EmptyModelFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -40,29 +41,36 @@ public class ValidationService {
 		try {
 			var factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			schema = factory.newSchema(new StreamSource(XMLEditor.class.getResourceAsStream("/account-statement.xsd")));
-		} catch (SAXException e) {
+			documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		} catch (SAXException | ParserConfigurationException e) {
 			logger.log(Level.SEVERE, "Schema loading failed", e);
 		}
 	}
 
 	public AccountStatement loadXML(File xmlFile) throws ValidationException {
 		try {
-			documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document document = documentBuilder.parse(xmlFile);
-			JAXBContext context = JAXBContext.newInstance(AccountStatement.class);
-
-			binder = context.createBinder();
-			binder.setSchema(schema);
-			binder.setEventHandler(new ValidationErrorHandler());
-			binder.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			createBinder();
 
 			model = binder.unmarshal(document, AccountStatement.class);
 			node = binder.getXMLNode(model);
 			return model.getValue();
-		} catch (JAXBException | ParserConfigurationException | SAXException | IOException e) {
+		} catch (JAXBException | SAXException | IOException e) {
 			logger.log(Level.SEVERE, "Loading XML failed", e);
 			throw new ValidationException("Loading XML failed", e);
 		}
+	}
+
+	public AccountStatement createEmptyXML() {
+		createBinder();
+		model = new ObjectFactory().createAccountStatement(EmptyModelFactory.createEmptyModel(AccountStatement.class, null));
+		try {
+			node = documentBuilder.newDocument();
+			binder.marshal(model, node);
+		} catch (JAXBException e) {
+			logger.log(Level.SEVERE, "Marshaling XML failed", e);
+		}
+		return model.getValue();
 	}
 
 	public void validateXML() {
@@ -73,6 +81,19 @@ public class ValidationService {
 			transformer.transform(new DOMSource(node), new StreamResult(System.out));
 		} catch (JAXBException | TransformerException e) {
 			logger.log(Level.SEVERE, "Validating XML failed", e);
+		}
+	}
+
+	private void createBinder() {
+		try {
+			JAXBContext context = JAXBContext.newInstance(AccountStatement.class);
+
+			binder = context.createBinder();
+			binder.setSchema(schema);
+			binder.setEventHandler(new ValidationErrorHandler());
+			binder.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		} catch (JAXBException e) {
+			logger.log(Level.SEVERE, "Creating binder failed", e);
 		}
 	}
 }

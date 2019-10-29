@@ -46,7 +46,7 @@ public class WorkspaceActionService implements WorkspaceAction {
 
 	@Override
 	public void newDocumentAction() {
-		model.setValue(EmptyModelFactory.createEmptyModel(AccountStatement.class, null));
+		model.setValue(validationService.createEmptyXML());
 		model.notifyListeners();
 	}
 
