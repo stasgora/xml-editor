@@ -10,13 +10,13 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
-import javax.xml.bind.Binder;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
+import javax.xml.bind.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -31,6 +31,8 @@ public class ValidationService {
 
 	private Binder<Node> binder;
 	JAXBElement<AccountStatement> model;
+	private DocumentBuilder documentBuilder;
+	private Node node;
 	private Schema schema;
 
 	@Inject
@@ -45,15 +47,17 @@ public class ValidationService {
 
 	public AccountStatement loadXML(File xmlFile) throws ValidationException {
 		try {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			Document document = dbf.newDocumentBuilder().parse(xmlFile);
-			JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
+			documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document document = documentBuilder.parse(xmlFile);
+			JAXBContext context = JAXBContext.newInstance(AccountStatement.class);
 
 			binder = context.createBinder();
 			binder.setSchema(schema);
 			binder.setEventHandler(new ValidationErrorHandler());
+			binder.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
 			model = binder.unmarshal(document, AccountStatement.class);
+			node = binder.getXMLNode(model);
 			return model.getValue();
 		} catch (JAXBException | ParserConfigurationException | SAXException | IOException e) {
 			logger.log(Level.SEVERE, "Loading XML failed", e);
@@ -63,8 +67,11 @@ public class ValidationService {
 
 	public void validateXML() {
 		try {
-			binder.updateXML(model);
-		} catch (JAXBException e) {
+			node = binder.updateXML(model, node);
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.transform(new DOMSource(node), new StreamResult(System.out));
+		} catch (JAXBException | TransformerException e) {
 			logger.log(Level.SEVERE, "Validating XML failed", e);
 		}
 	}

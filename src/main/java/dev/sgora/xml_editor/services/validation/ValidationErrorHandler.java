@@ -19,10 +19,8 @@ public class ValidationErrorHandler implements ValidationEventHandler {
 			return true;
 		}
 		ValidationEventLocator locator = validationEvent.getLocator();
-		logger.log(Level.WARNING, locator.getLineNumber() + " " + locator.getColumnNumber());
-		Node node = locator.getNode();
+		logger.log(Level.WARNING, validationEvent.getMessage());
 		Object object = locator.getObject();
-		URL url = locator.getURL();
 		return true;
 	}
 }
