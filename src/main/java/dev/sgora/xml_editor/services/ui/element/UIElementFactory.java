@@ -2,6 +2,7 @@ package dev.sgora.xml_editor.services.ui.element;
 
 import dev.sgora.xml_editor.element.ElementTitleType;
 import dev.sgora.xml_editor.element.EnumField;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -24,6 +25,7 @@ public class UIElementFactory {
 	private static final Logger logger = Logger.getLogger(UIElementFactory.class.getName());
 
 	private static final String TEXT_FIELD_CLASS = "xml-field";
+	private static final String FIELD_ERROR_CLASS = "error-field";
 	private static final String MULTI_TEXT_FIELD_CLASS = "xml-multi-field";
 
 	public static TextField createTextField(String text, BiConsumer<Node, Object> setValue) {
@@ -104,16 +106,21 @@ public class UIElementFactory {
 		return (String) object.getClass().getMethod(fieldType.name).invoke(object);
 	}
 	
-	public void showFieldError(Node node, String errorMessage) {
-		node.getStyleClass().add("error-field");
-		ContextMenu validationMessage = new ContextMenu();
-		validationMessage.setAutoHide(false);
-		validationMessage.getItems().add(new MenuItem(errorMessage));
+	public static ContextMenu createFieldErrorList(Node node) {
+		ContextMenu errorList = new ContextMenu();
+		errorList.setAutoHide(false);
+		errorList.getItems().addListener((ListChangeListener.Change<? extends MenuItem> c) -> {
+			if(!c.getList().isEmpty() && !node.getStyleClass().contains(FIELD_ERROR_CLASS))
+				node.getStyleClass().add(FIELD_ERROR_CLASS);
+			else if(c.getList().isEmpty() && node.getStyleClass().contains(FIELD_ERROR_CLASS))
+				node.getStyleClass().remove(FIELD_ERROR_CLASS);
+		});
 		node.hoverProperty().addListener(((observable, oldVal, newVal) -> {
 			if(newVal)
-				validationMessage.show(node, Side.RIGHT, 10, 0);
+				errorList.show(node, Side.RIGHT, 10, 0);
 			else
-				validationMessage.hide();
+				errorList.hide();
 		}));
+		return errorList;
 	}
 }

@@ -35,9 +35,11 @@ public class ValidationService {
 	private DocumentBuilder documentBuilder;
 	private Node node;
 	private Schema schema;
+	private ValidationErrorHandler errorHandler;
 
 	@Inject
-	private ValidationService() {
+	private ValidationService(ValidationErrorHandler errorHandler) {
+		this.errorHandler = errorHandler;
 		try {
 			var factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			schema = factory.newSchema(new StreamSource(XMLEditor.class.getResourceAsStream("/account-statement.xsd")));
@@ -75,12 +77,20 @@ public class ValidationService {
 
 	public void validateXML() {
 		try {
+			errorHandler.clearErrorMessages();
 			node = binder.updateXML(model, node);
+		} catch (JAXBException e) {
+			logger.log(Level.SEVERE, "Validating XML failed", e);
+		}
+	}
+
+	public void serializeXML() {
+		try {
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			transformer.transform(new DOMSource(node), new StreamResult(System.out));
-		} catch (JAXBException | TransformerException e) {
-			logger.log(Level.SEVERE, "Validating XML failed", e);
+		} catch (TransformerException e) {
+			logger.log(Level.SEVERE, "Serializing XML failed", e);
 		}
 	}
 
@@ -90,7 +100,7 @@ public class ValidationService {
 
 			binder = context.createBinder();
 			binder.setSchema(schema);
-			binder.setEventHandler(new ValidationErrorHandler());
+			binder.setEventHandler(errorHandler);
 			binder.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		} catch (JAXBException e) {
 			logger.log(Level.SEVERE, "Creating binder failed", e);

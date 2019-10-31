@@ -19,7 +19,7 @@
 	-fx-background-radius: 8px;
 }
 
-.error-field .xml-field .menu-item > .label {
+.error-field .context-menu .menu-item > .label {
 	-fx-text-fill: white;
 	-fx-font-weight: bold;
 }

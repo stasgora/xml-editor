@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -21,7 +22,9 @@ import javafx.scene.layout.VBox;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +35,9 @@ public class ModelUIMapper {
 	private static final String VALUE_SET_ERROR = "Setting model value failed";
 
 	private final Model<AccountStatement> model;
+
+	public final Map<Object, Node> modelUiMap = new HashMap<>();
+	public final Map<Node, ContextMenu> elementErrorMap = new HashMap<>();
 
 	private Pane infoRoot;
 	private Pane historyRoot;
@@ -77,6 +83,7 @@ public class ModelUIMapper {
 			if(layout == ElementLayout.VERTICAL)
 				((VBox) elementContainer).setAlignment(Pos.TOP_CENTER);
 		}
+		registerElement(element, elementContainer);
 		for (Field field : modelType.getDeclaredFields()) {
 			field.setAccessible(true);
 			Object value = field.get(element);
@@ -133,6 +140,11 @@ public class ModelUIMapper {
 					mapElement(listElement, listValueSetter, ElementLayout.HORIZONTAL, i == 0), listElementSupplier, listContainer));
 		}
 		return listContainer;
+	}
+
+	private void registerElement(Object model, Node element) {
+		modelUiMap.put(model, element);
+		elementErrorMap.put(element, UIElementFactory.createFieldErrorList(element));
 	}
 
 	private void clearElements() {
