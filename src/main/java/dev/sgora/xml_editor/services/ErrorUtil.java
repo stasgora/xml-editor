@@ -7,16 +7,6 @@ import java.util.logging.Logger;
 public class ErrorUtil {
 	private static final Logger logger = Logger.getLogger(ErrorUtil.class.getName());
 
-	public static Runnable wrap(Unsafe unsafe, String errorMessage) {
-		return () -> {
-			try {
-				unsafe.execute();
-			} catch (Exception e) {
-				logger.log(Level.SEVERE, errorMessage, e);
-			}
-		};
-	}
-
 	public static <P> Consumer<P> wrap(UnsafeConsumer<P> consumer, String errorMessage) {
 		return param -> {
 			try {
@@ -27,10 +17,10 @@ public class ErrorUtil {
 		};
 	}
 
-	public static <P> Supplier<P> wrap(UnsafeSupplier<P> supplier, String errorMessage) {
-		return () -> {
+	public static <P, R> Function<P, R> wrap(UnsafeFunction<P, R> supplier, String errorMessage) {
+		return param -> {
 			try {
-				return supplier.get();
+				return supplier.apply(param);
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, errorMessage, e);
 				return null;
@@ -59,8 +49,8 @@ public class ErrorUtil {
 	}
 
 	@FunctionalInterface
-	public interface UnsafeSupplier<P> {
-		P get() throws Exception;
+	public interface UnsafeFunction<P, R> {
+		R apply(P param) throws Exception;
 	}
 
 	@FunctionalInterface

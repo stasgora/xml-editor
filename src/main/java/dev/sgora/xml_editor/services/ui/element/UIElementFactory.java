@@ -16,8 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,20 +64,28 @@ public class UIElementFactory {
 		return comboBox;
 	}
 
-	public static HBox wrapFieldAsListElement(Node field, Supplier<Node> fieldSupplier, VBox container) {
+	public static HBox wrapFieldAsListElement(Node field, Supplier<Object> modelSupplier, Function<Object, Node> modelToElement,
+	                                          BiConsumer<Integer, Object> onElementAdded, IntConsumer onElementRemoved, VBox container) {
 		HBox layout = new HBox(5);
 		layout.setAlignment(Pos.CENTER_LEFT);
 		layout.getStyleClass().add(MULTI_TEXT_FIELD_CLASS);
 		Button removeField = new Button("-");
 		removeField.setOnAction(event -> {
-			if(container.getChildren().size() > 1)
+			if(container.getChildren().size() > 1) {
+				onElementRemoved.accept(container.getChildren().indexOf(layout));
 				container.getChildren().remove(layout);
+			}
 		});
 		removeField.setTooltip(new Tooltip("Remove item"));
 		Button addField = new Button("+");
 		addField.setTooltip(new Tooltip("Add item after"));
-		addField.setOnAction(event -> container.getChildren().add(container.getChildren().indexOf(layout) + 1,
-				wrapFieldAsListElement(fieldSupplier.get(), fieldSupplier, container)));
+		addField.setOnAction(event -> {
+			int index = container.getChildren().indexOf(layout) + 1;
+			Object model = modelSupplier.get();
+			HBox element = wrapFieldAsListElement(modelToElement.apply(model), modelSupplier, modelToElement, onElementAdded, onElementRemoved, container);
+			onElementAdded.accept(index, model);
+			container.getChildren().add(index, element);
+		});
 		layout.getChildren().addAll(field, removeField, addField);
 		return layout;
 	}

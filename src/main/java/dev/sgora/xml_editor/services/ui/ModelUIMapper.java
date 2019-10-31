@@ -134,10 +134,11 @@ public class ModelUIMapper {
 				return -1;
 			};
 			BiConsumer<Node, Object> listValueSetter = (uiElem, val) -> list.set(indexFinder.apply(uiElem), val);
-			Supplier<Node> listElementSupplier = ErrorUtil.wrap(() -> mapElement(EmptyModelFactory.createEmptyModel(listElement.getClass(),
-					null), listValueSetter, ElementLayout.HORIZONTAL, false), "Mapping model failed");
-			children.add(UIElementFactory.wrapFieldAsListElement(
-					mapElement(listElement, listValueSetter, ElementLayout.HORIZONTAL, i == 0), listElementSupplier, listContainer));
+			Supplier<Object> modelSupplier = () -> EmptyModelFactory.createEmptyModel(listElement.getClass(), null);
+			Function<Object, Node> modelToElement = ErrorUtil.wrap((ErrorUtil.UnsafeFunction<Object, Node>)
+					model -> mapElement(model, listValueSetter, ElementLayout.HORIZONTAL, false), "Mapping model failed");
+			Node childElement = mapElement(listElement, listValueSetter, ElementLayout.HORIZONTAL, i == 0);
+			children.add(UIElementFactory.wrapFieldAsListElement(childElement, modelSupplier, modelToElement, list::add, list::remove, listContainer));
 		}
 		return listContainer;
 	}
