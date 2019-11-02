@@ -9,18 +9,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class EnumElement extends Element<ComboBox, String, Object> {
+public class EnumElement extends ValueElement<ComboBox, String, Object> {
 	private final Class enumType;
 	private final Map<String, String> enumValueMap;
 
-	public EnumElement(Object modelObject, Field objectField, String value, Class enumType) {
+	public EnumElement(Object modelObject, Field objectField, Object value) {
 		super(modelObject, objectField, value);
-		this.enumType = enumType;
+		this.enumType = value.getClass();
 		enumValueMap = getEnumFieldMap(enumType.getEnumConstants());
 	}
 
 	@Override
-	protected ComboBox createUiElement(Object value) {
+	protected ComboBox createUIElement(Object value) {
 		ComboBox<String> comboBox = new ComboBox<>();
 		comboBox.getItems().addAll(enumValueMap.keySet());
 		comboBox.setValue(convertModelToElementValue(value));

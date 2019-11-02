@@ -53,7 +53,7 @@ public class UIElementFactory {
 	}
 
 	public static ComboBox createComboBox(Class type, Object value, BiConsumer<Node, Object> setValue)
-			throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+			throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 		ComboBox<String> comboBox = new ComboBox<>();
 		Map<String, String> enumValueMap = getEnumFieldMap(type.getEnumConstants());
 		comboBox.getItems().addAll(enumValueMap.keySet());
