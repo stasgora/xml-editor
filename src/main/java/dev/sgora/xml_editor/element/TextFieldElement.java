@@ -4,23 +4,18 @@ import javafx.scene.control.TextField;
 
 import java.lang.reflect.Field;
 
-public class TextElement extends Element<TextField, String> {
+public abstract class TextFieldElement<MV> extends Element<TextField, String, MV> {
 	private static final String TEXT_FIELD_CLASS = "xml-field";
 
-	public TextElement(Object modelObject, Field objectField, String value) {
+	public TextFieldElement(Object modelObject, Field objectField, MV value) {
 		super(modelObject, objectField, value);
 	}
 
 	@Override
-	protected TextField createUiElement(String value) {
-		TextField field = new TextField(value);
+	protected TextField createUiElement(MV value) {
+		TextField field = new TextField(convertModelToElementValue(value));
 		field.getStyleClass().add(TEXT_FIELD_CLASS);
 		field.textProperty().addListener((observable, oldVal, newVal) -> updateModelValue(newVal));
 		return field;
-	}
-
-	@Override
-	public void updateModelValue(String value) {
-		super.updateModelValue(value);
 	}
 }

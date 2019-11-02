@@ -1,4 +1,4 @@
-package dev.sgora.xml_editor.element;
+package dev.sgora.xml_editor.element.enums;
 
 public enum  EnumField {
 	VALUE("value"),

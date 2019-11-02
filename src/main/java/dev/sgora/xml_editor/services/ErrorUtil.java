@@ -39,11 +39,6 @@ public class ErrorUtil {
 	}
 
 	@FunctionalInterface
-	public interface Unsafe {
-		void execute() throws Exception;
-	}
-
-	@FunctionalInterface
 	public interface UnsafeConsumer<P> {
 		void consume(P param) throws Exception;
 	}

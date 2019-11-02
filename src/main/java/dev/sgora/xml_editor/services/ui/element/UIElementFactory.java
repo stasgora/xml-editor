@@ -1,7 +1,7 @@
 package dev.sgora.xml_editor.services.ui.element;
 
-import dev.sgora.xml_editor.element.ElementTitleType;
-import dev.sgora.xml_editor.element.EnumField;
+import dev.sgora.xml_editor.element.enums.ElementTitleType;
+import dev.sgora.xml_editor.element.enums.EnumField;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
@@ -102,7 +102,7 @@ public class UIElementFactory {
 		return box;
 	}
 
-	private static Map<String, String> getEnumFieldMap(Object[] values) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+	private static Map<String, String> getEnumFieldMap(Object[] values) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 		Map<String, String> map = new HashMap<>();
 		for (Object value : values)
 			map.put(getEnumField(value, EnumField.VALUE), getEnumField(value, EnumField.NAME));
