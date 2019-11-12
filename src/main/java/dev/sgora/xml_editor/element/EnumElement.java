@@ -1,6 +1,7 @@
 package dev.sgora.xml_editor.element;
 
 import dev.sgora.xml_editor.element.enums.EnumField;
+import dev.sgora.xml_editor.element.position.ElementPosition;
 import javafx.scene.control.ComboBox;
 
 import java.lang.reflect.Field;
@@ -10,13 +11,12 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class EnumElement extends ValueElement<ComboBox, String, Object> {
-	private final Class enumType;
 	private final Map<String, String> enumValueMap;
 
-	public EnumElement(Object modelObject, Field objectField, Object value) {
-		super(modelObject, objectField, value);
-		this.enumType = value.getClass();
-		enumValueMap = getEnumFieldMap(enumType.getEnumConstants());
+	public EnumElement(Object value, ElementPosition<Object> position) {
+		super(value, position);
+		enumValueMap = getEnumFieldMap(modelType.getEnumConstants());
+		init();
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class EnumElement extends ValueElement<ComboBox, String, Object> {
 
 	@Override
 	protected Object convertElementToModelValue(String value) {
-		return Enum.valueOf((Class<? extends Enum>) enumType, enumValueMap.get(value));
+		return Enum.valueOf((Class<? extends Enum>) modelType, enumValueMap.get(value));
 	}
 
 	@Override

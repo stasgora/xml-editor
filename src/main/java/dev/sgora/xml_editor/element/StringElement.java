@@ -1,11 +1,11 @@
 package dev.sgora.xml_editor.element;
 
-import java.lang.reflect.Field;
+import dev.sgora.xml_editor.element.position.ElementPosition;
 
 public class StringElement extends TextFieldElement<String> {
-
-	public StringElement(Object modelObject, Field objectField, String value) {
-		super(modelObject, objectField, value);
+	public StringElement(String value, ElementPosition<String> position) {
+		super(value, position);
+		init();
 	}
 
 	@Override

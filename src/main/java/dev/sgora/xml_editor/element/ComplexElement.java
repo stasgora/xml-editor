@@ -2,6 +2,8 @@ package dev.sgora.xml_editor.element;
 
 import dev.sgora.xml_editor.element.enums.ElementLayout;
 import dev.sgora.xml_editor.element.enums.ElementTitleType;
+import dev.sgora.xml_editor.element.position.ElementPosition;
+import dev.sgora.xml_editor.element.position.FieldPosition;
 import dev.sgora.xml_editor.services.ui.element.UIElementFactory;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -19,30 +21,30 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class ComplexElement<M> extends Element<Pane, M> {
-	public final List<Element> children = new ArrayList<>();
+	private final List<Element> children = new ArrayList<>();
 
 	private final ElementLayout layout;
 	private boolean root;
-	private boolean labelChildren = true;
+	private boolean labelChildren;
 
-	public ComplexElement(Object modelObject, Field objectField, M value, ElementLayout layout) {
-		super(modelObject, objectField, value);
-		this.layout = layout;
+	public ComplexElement(M value, ElementPosition<M> position, boolean isRoot, boolean labelChildren) {
+		super(value, position);
+		layout = position instanceof FieldPosition ? ElementLayout.VERTICAL : ElementLayout.HORIZONTAL;
+		root = isRoot;
+		this.labelChildren = labelChildren;
+		init();
 	}
 
-	public ComplexElement asRoot() {
-		root = true;
-		return this;
+	public ComplexElement(M value, ElementPosition<M> position) {
+		this(value, position, false, true);
 	}
 
-	public ComplexElement withoutChildLabels() {
-		labelChildren = false;
-		return this;
+	public ComplexElement(M value, ElementPosition<M> position, boolean root) {
+		this(value, position, root, true);
 	}
 
 	@Override
-	protected Pane createUIElement(M value) {
-		Class modelType = objectField.getType();
+	protected Pane createUIElement(M modelObject) {
 		Pane elementContainer = layout == ElementLayout.VERTICAL ? UIElementFactory.createAlignedVBox(Pos.TOP_LEFT, 5) : new HBox(10);
 		elementContainer.setPadding(new Insets(10, 0, 10, 0));
 		ObservableList<Node> children = elementContainer.getChildren();
@@ -53,12 +55,11 @@ public class ComplexElement<M> extends Element<Pane, M> {
 		}
 		//registerElement(element, elementContainer);
 		try {
-			Object modelObject = objectField.get(modelParentObject);
 			for (Field field : modelType.getDeclaredFields()) {
 				field.setAccessible(true);
 				Object fieldValue = field.get(modelObject);
 
-				this.children.add(mapElement(modelObject, field, fieldValue, layout));
+				this.children.add(mapElement(fieldValue, new FieldPosition(field, modelObject)));
 				Node childUIElement = this.children.get(this.children.size() - 1).uiElement;
 				if(!labelChildren || fieldValue instanceof List) {
 					children.add(childUIElement);
@@ -76,17 +77,17 @@ public class ComplexElement<M> extends Element<Pane, M> {
 		return elementContainer;
 	}
 
-	protected static Element mapElement(Object parentObject, Field elementField, Object element, ElementLayout layout) {
+	protected static Element mapElement(Object element, ElementPosition position) {
 		if(element instanceof String)
-			return new StringElement(parentObject, elementField, (String) element);
+			return new StringElement((String) element, position);
 		if(element instanceof Number)
-			return new NumericElement(parentObject, elementField, (Number) element);
+			return new NumericElement((Number) element, position);
 		if(element instanceof XMLGregorianCalendar)
-			return new DateElement(parentObject, elementField, (XMLGregorianCalendar) element);
+			return new DateElement((XMLGregorianCalendar) element, position);
 		if (element.getClass().isEnum())
-			return new EnumElement(parentObject, elementField, element);
+			return new EnumElement(element, position);
 		if (element instanceof List)
-			return mapListElement(element);
-		return new ComplexElement(parentObject, elementField, element, layout);
+			return new ListElement((List) element, position);
+		return new ComplexElement(element, position);
 	}
 }

@@ -1,5 +1,6 @@
 package dev.sgora.xml_editor.element;
 
+import dev.sgora.xml_editor.element.position.ElementPosition;
 import dev.sgora.xml_editor.services.ui.element.EmptyModelFactory;
 import javafx.scene.control.DatePicker;
 
@@ -10,8 +11,9 @@ import java.time.LocalDate;
 import java.util.logging.Level;
 
 public class DateElement extends ValueElement<DatePicker, LocalDate, XMLGregorianCalendar> {
-	public DateElement(Object modelObject, Field objectField, XMLGregorianCalendar value) {
-		super(modelObject, objectField, value);
+	public DateElement(XMLGregorianCalendar value, ElementPosition<XMLGregorianCalendar> position) {
+		super(value, position);
+		init();
 	}
 
 	@Override

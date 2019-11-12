@@ -1,12 +1,12 @@
 package dev.sgora.xml_editor.element;
 
+import dev.sgora.xml_editor.element.position.ElementPosition;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 
-import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
 public abstract class Element<E extends Node, MV> {
@@ -14,16 +14,20 @@ public abstract class Element<E extends Node, MV> {
 
 	private static final String FIELD_ERROR_CLASS = "error-field";
 
-	public final Field objectField;
-	public final Object modelParentObject;
+	public final Class modelType;
+	protected final ElementPosition<MV> position;
 
-	public final E uiElement;
-	private final ContextMenu errorList;
+	public E uiElement;
+	private ContextMenu errorList;
+	private final MV value;
 
-	public Element(Object modelParentObject, Field objectField, MV value) {
-		this.modelParentObject = modelParentObject;
-		this.objectField = objectField;
-		objectField.setAccessible(true);
+	public Element(MV value, ElementPosition<MV> position) {
+		this.value = value;
+		this.position = position;
+		this.modelType = value.getClass();
+	}
+
+	protected void init() {
 		uiElement = createUIElement(value);
 		errorList = createFieldErrorList(uiElement);
 	}

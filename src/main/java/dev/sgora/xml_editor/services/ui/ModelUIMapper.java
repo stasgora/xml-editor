@@ -2,6 +2,8 @@ package dev.sgora.xml_editor.services.ui;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import dev.sgora.xml_editor.element.ComplexElement;
+import dev.sgora.xml_editor.element.position.FieldPosition;
 import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
 import dev.sgora.xml_editor.services.ErrorUtil;
@@ -65,82 +67,12 @@ public class ModelUIMapper {
 			for (int i = 0; i < rootFields.length; i++) {
 				rootFields[i].setAccessible(true);
 				Pane root = i < Math.ceil(rootFieldsCount / 2d) ? infoRoot : historyRoot;
-				root.getChildren().add(mapComplexElement(rootFields[i].get(model.getValue()), ElementLayout.VERTICAL, true, true));
+				ComplexElement element = new ComplexElement(rootFields[i].get(model.getValue()), new FieldPosition(rootFields[i], model.getValue()), true);
+				root.getChildren().add(element.uiElement);
 			}
-		} catch (IllegalAccessException | NoSuchFieldException | NoSuchMethodException | InvocationTargetException | InstantiationException e) {
+		} catch (IllegalAccessException e) {
 			logger.log(Level.WARNING, "Mapping model failed", e);
 		}
-	}
-
-	private Node mapComplexElement(Object element, ElementLayout layout, boolean addLabel, boolean root)
-			throws IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InvocationTargetException, InstantiationException {
-		Class modelType = element.getClass();
-		Pane elementContainer = layout == ElementLayout.VERTICAL ? UIElementFactory.createAlignedVBox(Pos.TOP_LEFT, 5) : new HBox(10);
-		elementContainer.setPadding(new Insets(10, 0, 10, 0));
-		ObservableList<Node> children = elementContainer.getChildren();
-		if(root) {
-			children.add(UIElementFactory.createElementTitle(modelType.getSimpleName(), ElementTitleType.ROOT));
-			if(layout == ElementLayout.VERTICAL)
-				((VBox) elementContainer).setAlignment(Pos.TOP_CENTER);
-		}
-		registerElement(element, elementContainer);
-		for (Field field : modelType.getDeclaredFields()) {
-			field.setAccessible(true);
-			Object value = field.get(element);
-			Node child = mapElement(value, ErrorUtil.wrap((uiElem, val) -> field.set(element, val), VALUE_SET_ERROR), ElementLayout.VERTICAL, addLabel);
-			if(!addLabel || value instanceof List) {
-				children.add(child);
-				continue;
-			}
-			Label label = UIElementFactory.createElementTitle(field.getName(), ElementTitleType.SUB);
-			if(layout == ElementLayout.VERTICAL)
-				children.addAll(label, child);
-			else
-				children.add(UIElementFactory.createAlignedVBox(Pos.TOP_CENTER, 5, label, child));
-		}
-		return elementContainer;
-	}
-
-	private Node mapElement(Object element, BiConsumer<Node, Object> setValue, ElementLayout layout, boolean addLabel)
-			throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
-		if(element instanceof String)
-			return UIElementFactory.createTextField((String) element, setValue);
-		if(element instanceof Number) {
-			BiConsumer<Node, Object> valueSetter = ErrorUtil.wrap((node, val) -> setValue.accept(node, element.getClass().getConstructor(String.class).newInstance(val)), VALUE_SET_ERROR);
-			return UIElementFactory.createTextField(element.toString(), valueSetter);
-		}
-		if(element instanceof XMLGregorianCalendar)
-			return UIElementFactory.createDateField((XMLGregorianCalendar) element, setValue);
-		if (element.getClass().isEnum())
-			return UIElementFactory.createComboBox(element.getClass(), element, setValue);
-		if (element instanceof List)
-			return mapListElement(element);
-		return mapComplexElement(element, layout, addLabel, false);
-	}
-
-	private VBox mapListElement(Object element) throws NoSuchFieldException, IllegalAccessException,
-			NoSuchMethodException, InvocationTargetException, InstantiationException {
-		VBox listContainer = UIElementFactory.createAlignedVBox(Pos.TOP_CENTER, 5);
-		List list = (List) element;
-		ObservableList<Node> children = listContainer.getChildren();
-		for (int i = 0; i < list.size(); i++) {
-			Object listElement = list.get(i);
-			Function<Node, Integer> indexFinder = node -> {
-				for (int j = 0; j < children.size(); j++) {
-					Node child = children.get(j);
-					if (((HBox) child).getChildren().get(0) == node)
-						return j;
-				}
-				return -1;
-			};
-			BiConsumer<Node, Object> listValueSetter = (uiElem, val) -> list.set(indexFinder.apply(uiElem), val);
-			Supplier<Object> modelSupplier = () -> EmptyModelFactory.createEmptyModel(listElement.getClass(), null);
-			Function<Object, Node> modelToElement = ErrorUtil.wrap((ErrorUtil.UnsafeFunction<Object, Node>)
-					model -> mapElement(model, listValueSetter, ElementLayout.HORIZONTAL, false), "Mapping model failed");
-			Node childElement = mapElement(listElement, listValueSetter, ElementLayout.HORIZONTAL, i == 0);
-			children.add(UIElementFactory.wrapFieldAsListElement(childElement, modelSupplier, modelToElement, list::add, list::remove, listContainer));
-		}
-		return listContainer;
 	}
 
 	private void registerElement(Object model, Node element) {

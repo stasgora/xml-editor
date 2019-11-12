@@ -1,5 +1,6 @@
 package dev.sgora.xml_editor.element;
 
+import dev.sgora.xml_editor.element.position.ElementPosition;
 import javafx.scene.Node;
 
 import java.lang.reflect.Field;
@@ -12,15 +13,8 @@ import java.util.logging.Level;
  * @param <MV> Model value type
  */
 public abstract class ValueElement<E extends Node, EV, MV> extends Element<E, MV> {
-
-	private Consumer<MV> setModelValue;
-
-	public ValueElement(Object modelObject, Field objectField, MV value) {
-		super(modelObject, objectField, value);
-	}
-
-	public void withCustomSetFunction(Consumer<MV> setModelValue) {
-		this.setModelValue = setModelValue;
+	public ValueElement(MV value, ElementPosition<MV> position) {
+		super(value, position);
 	}
 
 	protected abstract MV convertElementToModelValue(EV value) throws ValueConversionError;
@@ -29,10 +23,7 @@ public abstract class ValueElement<E extends Node, EV, MV> extends Element<E, MV
 	protected void updateModelValue(EV value) {
 		try {
 			MV modelValue = convertElementToModelValue(value);
-			if (setModelValue == null)
-				objectField.set(modelParentObject, modelValue);
-			else
-				setModelValue.accept(modelValue);
+			position.setModelValue(modelValue, uiElement);
 		} catch (IllegalAccessException e) {
 			logger.log(Level.SEVERE, "Setting model value failed", e);
 		} catch (ValueConversionError e) {
