@@ -18,6 +18,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class ComplexElement<M> extends Element<Pane, M> {
@@ -27,12 +28,15 @@ public class ComplexElement<M> extends Element<Pane, M> {
 	private boolean root;
 	private boolean labelChildren;
 
+	public static Consumer<ComplexElement> registerElement;
+
 	public ComplexElement(M value, ElementPosition<M> position, boolean isRoot, boolean labelChildren) {
 		super(value, position);
 		layout = position instanceof FieldPosition ? ElementLayout.VERTICAL : ElementLayout.HORIZONTAL;
 		root = isRoot;
 		this.labelChildren = labelChildren;
 		init();
+		registerElement.accept(this);
 	}
 
 	public ComplexElement(M value, ElementPosition<M> position) {

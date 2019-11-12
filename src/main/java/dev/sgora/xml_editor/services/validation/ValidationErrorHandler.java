@@ -2,23 +2,28 @@ package dev.sgora.xml_editor.services.validation;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import dev.sgora.xml_editor.element.ComplexElement;
+import dev.sgora.xml_editor.element.Element;
+import dev.sgora.xml_editor.model.AccountStatement;
+import dev.sgora.xml_editor.model.Model;
 import dev.sgora.xml_editor.services.ui.ModelUIMapper;
 import javafx.scene.control.MenuItem;
 
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Singleton
 public class ValidationErrorHandler implements ValidationEventHandler {
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
-	private ModelUIMapper modelUIMapper;
+	private Model<AccountStatement> model;
 
 	@Inject
-	public ValidationErrorHandler(ModelUIMapper modelUIMapper) {
-		this.modelUIMapper = modelUIMapper;
+	public ValidationErrorHandler(Model<AccountStatement> model) {
+		this.model = model;
 	}
 
 	@Override
@@ -33,14 +38,15 @@ public class ValidationErrorHandler implements ValidationEventHandler {
 	}
 
 	private void addErrorMessage(String message, Object object) {
-		if(!modelUIMapper.modelUiMap.containsKey(object)) {
+		Optional<ComplexElement> element = model.elements.stream().filter(elem -> elem.modelValue == object).findFirst();
+		if(element.isEmpty()) {
 			logger.log(Level.WARNING, "Invalid model object is not present in mapper maps");
 			return;
 		}
-		modelUIMapper.elementErrorMap.get(modelUIMapper.modelUiMap.get(object)).getItems().add(new MenuItem(message));
+		element.get().addError(message);
 	}
 
 	public void clearErrorMessages() {
-		modelUIMapper.elementErrorMap.forEach((node, list) -> list.getItems().clear());
+		model.elements.forEach(Element::clearErrors);
 	}
 }

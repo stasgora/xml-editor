@@ -15,20 +15,20 @@ public abstract class Element<E extends Node, MV> {
 	private static final String FIELD_ERROR_CLASS = "error-field";
 
 	public final Class modelType;
-	protected final ElementPosition<MV> position;
-
+	public final MV modelValue;
 	public E uiElement;
-	private ContextMenu errorList;
-	private final MV value;
 
-	public Element(MV value, ElementPosition<MV> position) {
-		this.value = value;
+	protected final ElementPosition<MV> position;
+	private ContextMenu errorList;
+
+	public Element(MV modelValue, ElementPosition<MV> position) {
+		this.modelValue = modelValue;
 		this.position = position;
-		this.modelType = value.getClass();
+		this.modelType = modelValue.getClass();
 	}
 
 	protected void init() {
-		uiElement = createUIElement(value);
+		uiElement = createUIElement(modelValue);
 		errorList = createFieldErrorList(uiElement);
 	}
 

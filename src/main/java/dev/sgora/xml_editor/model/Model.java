@@ -1,12 +1,16 @@
 package dev.sgora.xml_editor.model;
 
 import dev.sgora.observetree.Observable;
+import dev.sgora.xml_editor.element.ComplexElement;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Model<M> extends Observable {
 	private M value;
 	private File file;
+	public final List<ComplexElement> elements = new ArrayList<>();
 
 	public M getValue() {
 		return value;
