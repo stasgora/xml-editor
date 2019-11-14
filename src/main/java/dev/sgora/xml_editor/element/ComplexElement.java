@@ -4,12 +4,15 @@ import dev.sgora.xml_editor.element.enums.ElementLayout;
 import dev.sgora.xml_editor.element.enums.ElementTitleType;
 import dev.sgora.xml_editor.element.position.ElementPosition;
 import dev.sgora.xml_editor.element.position.FieldPosition;
+import dev.sgora.xml_editor.services.ui.element.EmptyModelFactory;
 import dev.sgora.xml_editor.services.ui.element.UIElementFactory;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -62,23 +65,48 @@ public class ComplexElement<M> extends Element<Pane, M> {
 				field.setAccessible(true);
 				Object fieldValue = field.get(modelObject);
 
-				Element element = mapElement(fieldValue, new FieldPosition(field, modelObject));
-				this.children.add(element);
-				Node childUIElement = this.children.get(this.children.size() - 1).uiElement;
-				if(!labelChildren || fieldValue instanceof List) {
-					children.add(childUIElement);
-					continue;
+				Node childUIElement;
+				if(fieldValue != null) {
+					Element element = mapElement(fieldValue, new FieldPosition(field, modelObject));
+					this.children.add(element);
+					childUIElement = element.uiElement;
+				} else {
+					Button addButton = new Button("+");
+					addButton.setTooltip(new Tooltip("Add"));
+					addButton.setOnAction(event -> {
+						Object model = EmptyModelFactory.createEmptyModel(field.getType(), null);
+						try {
+							field.set(modelObject, model);
+						} catch (IllegalAccessException e) {
+							logger.log(Level.WARNING, "Setting field value failed", e);
+						}
+						Element newElem = mapElement(model, position);
+						this.children.add(newElem);
+						int index = children.indexOf(addButton);
+						children.remove(index);
+						children.remove(index - 1);
+						handleNewElement(fieldValue, field, newElem.uiElement, children);
+					});
+					childUIElement = addButton;
 				}
-				Label label = UIElementFactory.createElementTitle(field.getName(), ElementTitleType.SUB);
-				if(layout == ElementLayout.VERTICAL)
-					children.addAll(label, childUIElement);
-				else
-					children.add(UIElementFactory.createAlignedVBox(Pos.TOP_CENTER, 5, label, childUIElement));
+				handleNewElement(fieldValue, field, childUIElement, children);
 			}
 		} catch (IllegalAccessException e) {
 			logger.log(Level.WARNING, "Resolving field value failed", e);
 		}
 		return elementContainer;
+	}
+
+	private void handleNewElement(Object fieldValue, Field field, Node childUIElement, ObservableList<Node> children) {
+		if(!labelChildren || fieldValue instanceof List) {
+			children.add(childUIElement);
+			return;
+		}
+		Label label = UIElementFactory.createElementTitle(field.getName(), ElementTitleType.SUB);
+		if(layout == ElementLayout.VERTICAL)
+			children.addAll(label, childUIElement);
+		else
+			children.add(UIElementFactory.createAlignedVBox(Pos.TOP_CENTER, 5, label, childUIElement));
 	}
 
 	protected static Element mapElement(Object element, ElementPosition position) {
