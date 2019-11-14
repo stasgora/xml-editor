@@ -6,7 +6,7 @@
 <VBox styleClass="root" fx:controller="dev.sgora.xml_editor.WindowView" xmlns:fx="http://javafx.com/fxml">
 	<MenuBar>
 		<Menu text="File">
-			<MenuItem fx:id="newMenuItem" text="New" accelerator="Ctrl+N"/>
+			<MenuItem fx:id="newMenuItem" visible="false" text="New" accelerator="Ctrl+N"/>
 			<MenuItem fx:id="openMenuItem" text="Open" accelerator="Ctrl+O"/>
 			<SeparatorMenuItem/>
 			<MenuItem fx:id="saveMenuItem" text="Save" accelerator="Ctrl+S"/>

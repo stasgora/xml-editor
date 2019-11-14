@@ -26,9 +26,11 @@ public class ListPosition<M> implements ElementPosition<M> {
 		listElement.getChildren().add(index, uiElement);
 	}
 
-	public void removeElement(Node uiElement) {
-		list.remove(listElement.getChildren().indexOf(uiElement));
+	public int removeElement(Node uiElement) {
+		int index = listElement.getChildren().indexOf(uiElement);
+		list.remove(index);
 		listElement.getChildren().remove(uiElement);
+		return index;
 	}
 
 	private int findChildIndex(Node uiElement) {

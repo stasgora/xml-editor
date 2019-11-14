@@ -30,6 +30,7 @@ public class ListElement<M extends List> extends ComplexElement<M> {
 		for (int i = 0; i < list.size(); i++) {
 			Object listElement = list.get(i);
 			Element childElement = mapElement(listElement, new ListPosition(list, listContainer));
+			this.children.add(childElement);
 			children.add(wrapFieldAsListElement(childElement));
 		}
 		return listContainer;
@@ -43,8 +44,9 @@ public class ListElement<M extends List> extends ComplexElement<M> {
 		ListPosition position = (ListPosition) listElement.position;
 		removeField.setOnAction(event -> {
 			if(position.listElement.getChildren().size() > 1) {
-				position.removeElement(layout);
+				int index = position.removeElement(layout);
 				onListElementsChanged.run();
+				children.remove(index);
 			}
 		});
 		removeField.setTooltip(new Tooltip("Remove item"));
@@ -53,8 +55,11 @@ public class ListElement<M extends List> extends ComplexElement<M> {
 		addField.setOnAction(event -> {
 			int index = position.listElement.getChildren().indexOf(layout) + 1;
 			Object model = EmptyModelFactory.createEmptyModel(listElement.modelType, null);
-			HBox element = wrapFieldAsListElement(mapElement(model, position));
+			Element newElem = mapElement(model, position);
+			HBox element = wrapFieldAsListElement(newElem);
+			children.add(newElem);
 			position.addElement(index, model, element);
+
 			onListElementsChanged.run();
 		});
 		layout.getChildren().addAll(listElement.uiElement, removeField, addField);
