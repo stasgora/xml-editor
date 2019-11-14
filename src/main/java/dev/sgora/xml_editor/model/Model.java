@@ -11,6 +11,7 @@ public class Model<M> extends Observable {
 	private M value;
 	private File file;
 	public final List<ComplexElement> elements = new ArrayList<>();
+	public final List<ComplexElement> rootElements = new ArrayList<>();
 
 	public M getValue() {
 		return value;
@@ -18,7 +19,15 @@ public class Model<M> extends Observable {
 
 	public void setValue(M value) {
 		this.value = value;
+		elements.clear();
+		rootElements.clear();
 		onValueChanged();
+	}
+
+	public void addElement(ComplexElement element) {
+		elements.add(element);
+		if(element.root)
+			rootElements.add(element);
 	}
 
 	public File getFile() {

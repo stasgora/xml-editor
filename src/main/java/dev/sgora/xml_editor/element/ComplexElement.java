@@ -22,11 +22,11 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class ComplexElement<M> extends Element<Pane, M> {
-	private final List<Element> children = new ArrayList<>();
+	public final List<Element> children = new ArrayList<>();
 
 	private final ElementLayout layout;
-	private boolean root;
-	private boolean labelChildren;
+	public final boolean root;
+	private final boolean labelChildren;
 
 	public static Consumer<ComplexElement> registerElement;
 
@@ -57,7 +57,6 @@ public class ComplexElement<M> extends Element<Pane, M> {
 			if(layout == ElementLayout.VERTICAL)
 				((VBox) elementContainer).setAlignment(Pos.TOP_CENTER);
 		}
-		//registerElement(element, elementContainer);
 		try {
 			for (Field field : modelType.getDeclaredFields()) {
 				field.setAccessible(true);

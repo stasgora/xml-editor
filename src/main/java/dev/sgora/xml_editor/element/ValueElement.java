@@ -24,10 +24,11 @@ public abstract class ValueElement<E extends Node, EV, MV> extends Element<E, MV
 		try {
 			MV modelValue = convertElementToModelValue(value);
 			position.setModelValue(modelValue, uiElement);
+			clearErrors(true);
 		} catch (IllegalAccessException e) {
 			logger.log(Level.SEVERE, "Setting model value failed", e);
 		} catch (ValueConversionError e) {
-			addError(e.getMessage());
+			addError(e.getMessage(), true);
 		}
 	}
 }

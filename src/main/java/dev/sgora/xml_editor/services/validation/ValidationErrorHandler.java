@@ -12,6 +12,7 @@ import javafx.scene.control.MenuItem;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,10 +44,18 @@ public class ValidationErrorHandler implements ValidationEventHandler {
 			logger.log(Level.WARNING, "Invalid model object is not present in mapper maps");
 			return;
 		}
-		element.get().addError(message);
+		element.get().addError(message, false);
 	}
 
 	public void clearErrorMessages() {
-		model.elements.forEach(Element::clearErrors);
+		clearErrorMessages(model.rootElements);
+	}
+
+	public void clearErrorMessages(List<? extends Element> elements) {
+		for (Element element : elements) {
+			element.clearErrors(false);
+			if(element instanceof ComplexElement)
+				clearErrorMessages(((ComplexElement) element).children);
+		}
 	}
 }

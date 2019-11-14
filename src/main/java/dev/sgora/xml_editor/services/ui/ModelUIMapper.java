@@ -25,7 +25,7 @@ public class ModelUIMapper {
 	@Inject
 	private ModelUIMapper(Model<AccountStatement> model) {
 		this.model = model;
-		ComplexElement.registerElement = model.elements::add;
+		ComplexElement.registerElement = model::addElement;
 		model.addListener(this::mapModelToUI);
 	}
 

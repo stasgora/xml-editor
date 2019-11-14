@@ -2,12 +2,15 @@ package dev.sgora.xml_editor.element;
 
 import dev.sgora.xml_editor.element.position.ElementPosition;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public abstract class Element<E extends Node, MV> {
 	protected final Logger logger = Logger.getLogger(this.getClass().getName());
@@ -34,12 +37,18 @@ public abstract class Element<E extends Node, MV> {
 
 	protected abstract E createUIElement(MV value);
 
-	public void addError(String error) {
-		errorList.getItems().add(new MenuItem(error));
+	public void addError(String error, boolean manualError) {
+		clearErrors(true); // Keep one error at a time for now
+		MenuItem errorItem = new MenuItem(error);
+		errorItem.setUserData(manualError);
+		errorList.getItems().add(errorItem);
 	}
 
-	public void clearErrors() {
-		errorList.getItems().clear();
+	public void clearErrors(boolean clearManual) {
+		if(clearManual)
+			errorList.getItems().clear();
+		else
+			errorList.getItems().removeAll(errorList.getItems().stream().filter(error -> !(boolean) error.getUserData()).collect(Collectors.toList()));
 	}
 
 	private ContextMenu createFieldErrorList(Node node) {
