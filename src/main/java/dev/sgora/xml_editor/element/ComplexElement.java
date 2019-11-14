@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 public class ComplexElement<M> extends Element<Pane, M> {
 	public final List<Element> children = new ArrayList<>();
+	public static Runnable onElementsChanged;
 
 	private final ElementLayout layout;
 	public final boolean root;
@@ -86,6 +87,7 @@ public class ComplexElement<M> extends Element<Pane, M> {
 						children.remove(index);
 						children.remove(index - 1);
 						handleNewElement(fieldValue, field, newElem.uiElement, children);
+						onElementsChanged.run();
 					});
 					childUIElement = addButton;
 				}

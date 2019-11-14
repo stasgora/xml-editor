@@ -3,6 +3,7 @@ package dev.sgora.xml_editor.services.validation;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import dev.sgora.xml_editor.XMLEditor;
+import dev.sgora.xml_editor.element.ComplexElement;
 import dev.sgora.xml_editor.element.ListElement;
 import dev.sgora.xml_editor.element.ValueElement;
 import dev.sgora.xml_editor.model.AccountStatement;
@@ -51,7 +52,7 @@ public class ValidationService {
 			logger.log(Level.SEVERE, "Schema loading failed", e);
 		}
 		ValueElement.onModelUpdated = this::validateXML;
-		ListElement.onListElementsChanged = this::validateXML;
+		ComplexElement.onElementsChanged = this::validateXML;
 	}
 
 	public AccountStatement loadXML(File xmlFile) throws ValidationException {
