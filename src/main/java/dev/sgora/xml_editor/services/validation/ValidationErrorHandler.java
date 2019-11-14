@@ -15,6 +15,9 @@ import javafx.scene.control.MenuItem;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -26,7 +29,8 @@ import java.util.stream.Stream;
 @Singleton
 public class ValidationErrorHandler implements ValidationEventHandler {
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
-	private static final Pattern ELEM_NAME_PATTERN = Pattern.compile("'.*'.*'([a-zA-Z]*)'");
+	private static final Pattern ELEM_NAME_PATTERN = Pattern.compile("element '([a-zA-Z]*)'");
+	private static final Pattern ATTR_NAME_PATTERN = Pattern.compile("attribute '([a-zA-Z]*)'");
 
 	private Model<AccountStatement> model;
 
@@ -53,13 +57,13 @@ public class ValidationErrorHandler implements ValidationEventHandler {
 			return;
 		}
 		String errorMessage = transformMessage(message);
-		Matcher matcher = ELEM_NAME_PATTERN.matcher(errorMessage);
+		Matcher matcher = errorMessage.contains("attribute '") ? ATTR_NAME_PATTERN.matcher(errorMessage) : ELEM_NAME_PATTERN.matcher(errorMessage);
 		Element invalidElement = getInvalidElement(object, element.get(), matcher, errorMessage);
 		if(invalidElement != null) {
 			String name = UIElementFactory.transformFieldName(getElementName(invalidElement));
 			StringBuffer sb = new StringBuffer();
-			matcher.appendReplacement(sb, matcher.group(0).replaceFirst(matcher.group(1), name));
-			matcher.appendTail(sb);
+			matcher.appendReplacement(sb, "element '" + name + "'");
+			sb.append(" is not valid");
 			invalidElement.addError(sb.toString(), false);
 		}
 	}
@@ -78,7 +82,11 @@ public class ValidationErrorHandler implements ValidationEventHandler {
 	}
 
 	private String getElementName(Element element) {
-		return ((FieldPosition) element.position).objectField.getName();
+		Field field = ((FieldPosition) element.position).objectField;
+		XmlAttribute attribute = field.getAnnotation(XmlAttribute.class);
+		if(attribute != null)
+			return attribute.name();
+		return field.getName();
 	}
 
 	private String transformMessage(String message) {

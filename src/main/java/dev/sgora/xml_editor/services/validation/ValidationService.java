@@ -23,6 +23,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -88,13 +89,16 @@ public class ValidationService {
 		}
 	}
 
-	public void serializeXML() {
+	public ByteArrayOutputStream serializeXML() {
 		try {
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.transform(new DOMSource(node), new StreamResult(System.out));
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			transformer.transform(new DOMSource(node), new StreamResult(output));
+			return output;
 		} catch (TransformerException e) {
 			logger.log(Level.SEVERE, "Serializing XML failed", e);
+			return null;
 		}
 	}
 

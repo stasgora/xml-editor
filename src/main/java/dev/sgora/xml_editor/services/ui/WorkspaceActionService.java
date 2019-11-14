@@ -13,9 +13,16 @@ import dev.sgora.xml_editor.services.validation.ValidationService;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Singleton
 public class WorkspaceActionService implements WorkspaceAction {
+	private final Logger logger = Logger.getLogger(this.getClass().getName());
+
 	private DialogService dialogService;
 	private final Model<AccountStatement> model;
 	private ValidationService validationService;
@@ -55,6 +62,11 @@ public class WorkspaceActionService implements WorkspaceAction {
 		File location = dialogService.showFileChooser(FileChooserAction.SAVE_DIALOG, "Save Document", filter);
 		if(location == null)
 			return;
+		try(FileOutputStream output = new FileOutputStream(location)) {
+			output.write(validationService.serializeXML().toByteArray());
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, "Saving XML failed", e);
+		}
 	}
 
 	@Override
