@@ -13,6 +13,8 @@ import java.util.logging.Level;
  * @param <MV> Model value type
  */
 public abstract class ValueElement<E extends Node, EV, MV> extends Element<E, MV> {
+	public static Runnable onModelUpdated;
+
 	public ValueElement(MV value, ElementPosition<MV> position) {
 		super(value, position);
 	}
@@ -25,6 +27,7 @@ public abstract class ValueElement<E extends Node, EV, MV> extends Element<E, MV
 			MV modelValue = convertElementToModelValue(value);
 			position.setModelValue(modelValue, uiElement);
 			clearErrors(true);
+			onModelUpdated.run();
 		} catch (IllegalAccessException e) {
 			logger.log(Level.SEVERE, "Setting model value failed", e);
 		} catch (ValueConversionError e) {

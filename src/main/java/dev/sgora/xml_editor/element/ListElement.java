@@ -17,6 +17,7 @@ import java.util.List;
 
 public class ListElement<M extends List> extends ComplexElement<M> {
 	private static final String MULTI_TEXT_FIELD_CLASS = "xml-multi-field";
+	public static Runnable onListElementsChanged;
 
 	public ListElement(M value, ElementPosition position) {
 		super(value, position);
@@ -43,6 +44,7 @@ public class ListElement<M extends List> extends ComplexElement<M> {
 		removeField.setOnAction(event -> {
 			if(position.listElement.getChildren().size() > 1) {
 				position.removeElement(layout);
+				onListElementsChanged.run();
 			}
 		});
 		removeField.setTooltip(new Tooltip("Remove item"));
@@ -53,6 +55,7 @@ public class ListElement<M extends List> extends ComplexElement<M> {
 			Object model = EmptyModelFactory.createEmptyModel(listElement.modelType, null);
 			HBox element = wrapFieldAsListElement(mapElement(model, position));
 			position.addElement(index, model, element);
+			onListElementsChanged.run();
 		});
 		layout.getChildren().addAll(listElement.uiElement, removeField, addField);
 		return layout;

@@ -14,7 +14,7 @@
 			<MenuItem fx:id="closeMenuItem" text="Close" accelerator="Ctrl+Q"/>
 			<MenuItem fx:id="quitMenuItem" text="Quit" accelerator="Ctrl+Shift+Q"/>
 		</Menu>
-		<Menu text="Debug">
+		<Menu text="Debug" visible="false">
 			<MenuItem fx:id="validateMenuItem" text="Validate" accelerator="Ctrl+R"/>
 		</Menu>
 	</MenuBar>

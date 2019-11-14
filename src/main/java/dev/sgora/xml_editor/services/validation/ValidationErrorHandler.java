@@ -67,10 +67,8 @@ public class ValidationErrorHandler implements ValidationEventHandler {
 	private Element getInvalidElement(Object object, ComplexElement element, Matcher matcher, String errorMessage) {
 		if(!Utils.isClassInternal(object.getClass()))
 			return element;
-		if(!matcher.find() || matcher.groupCount() < 1) {
-			logger.log(Level.INFO, "No element name found in error message: " + errorMessage);
+		if(!matcher.find() || matcher.groupCount() < 1)
 			return null;
-		}
 		Optional<Element> child = ((Stream<Element>) element.children.stream()).filter(elem -> getElementName(elem).equals(matcher.group(1))).findFirst();
 		if(child.isEmpty()) {
 			logger.log(Level.WARNING, "No child element found with name " + matcher.group(1));
