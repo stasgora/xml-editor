@@ -100,11 +100,25 @@ public class ValidationErrorHandler implements ValidationEventHandler {
 		clearErrorMessages(model.rootElements);
 	}
 
-	public void clearErrorMessages(List<? extends Element> elements) {
+	private void clearErrorMessages(List<? extends Element> elements) {
 		for (Element element : elements) {
 			element.clearErrors(false);
 			if(element instanceof ComplexElement)
 				clearErrorMessages(((ComplexElement) element).children);
 		}
+	}
+
+	public boolean documentHasErrors() {
+		return documentHasErrors(model.rootElements);
+	}
+
+	private boolean documentHasErrors(List<? extends Element> elements) {
+		for (Element element : elements) {
+			if(element.hasErrors())
+				return true;
+			if(element instanceof ComplexElement && documentHasErrors(((ComplexElement) element).children))
+				return true;
+		}
+		return false;
 	}
 }

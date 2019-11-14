@@ -42,6 +42,10 @@ public abstract class Element<E extends Node, MV> {
 		errorList.getItems().add(errorItem);
 	}
 
+	public boolean hasErrors() {
+		return errorList.getItems().size() > 0;
+	}
+
 	public void clearErrors(boolean clearManual) {
 		if(clearManual)
 			errorList.getItems().clear();

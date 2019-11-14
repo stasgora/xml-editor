@@ -59,6 +59,10 @@ public class WorkspaceActionService implements WorkspaceAction {
 
 	@Override
 	public void saveDocumentAction() {
+		if(validationService.errorHandler.documentHasErrors()) {
+			dialogService.showErrorDialog("Save Document", "Saving failed", "There are errors remaining");
+			return;
+		}
 		File location = dialogService.showFileChooser(FileChooserAction.SAVE_DIALOG, "Save Document", filter);
 		if(location == null)
 			return;

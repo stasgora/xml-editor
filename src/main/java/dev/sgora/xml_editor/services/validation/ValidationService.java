@@ -38,7 +38,7 @@ public class ValidationService {
 	private DocumentBuilder documentBuilder;
 	private Node node;
 	private Schema schema;
-	private ValidationErrorHandler errorHandler;
+	public ValidationErrorHandler errorHandler;
 
 	@Inject
 	private ValidationService(ValidationErrorHandler errorHandler) {
