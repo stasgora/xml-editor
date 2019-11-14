@@ -64,7 +64,10 @@ public class ValidationErrorHandler implements ValidationEventHandler {
 			StringBuffer sb = new StringBuffer();
 			matcher.appendReplacement(sb, "element '" + name + "'");
 			sb.append(" is not valid");
-			invalidElement.addError(sb.toString(), false);
+			if(sb.length() > 100)
+				invalidElement.addError("Value is invalid", false);
+			else
+				invalidElement.addError(sb.toString(), false);
 		}
 	}
 
