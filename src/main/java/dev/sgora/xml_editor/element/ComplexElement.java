@@ -62,7 +62,8 @@ public class ComplexElement<M> extends Element<Pane, M> {
 				field.setAccessible(true);
 				Object fieldValue = field.get(modelObject);
 
-				this.children.add(mapElement(fieldValue, new FieldPosition(field, modelObject)));
+				Element element = mapElement(fieldValue, new FieldPosition(field, modelObject));
+				this.children.add(element);
 				Node childUIElement = this.children.get(this.children.size() - 1).uiElement;
 				if(!labelChildren || fieldValue instanceof List) {
 					children.add(childUIElement);

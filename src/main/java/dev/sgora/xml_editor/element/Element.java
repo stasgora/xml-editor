@@ -2,13 +2,11 @@ package dev.sgora.xml_editor.element;
 
 import dev.sgora.xml_editor.element.position.ElementPosition;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 
-import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -21,7 +19,7 @@ public abstract class Element<E extends Node, MV> {
 	public final MV modelValue;
 	public E uiElement;
 
-	protected final ElementPosition<MV> position;
+	public final ElementPosition<MV> position;
 	private ContextMenu errorList;
 
 	public Element(MV modelValue, ElementPosition<MV> position) {

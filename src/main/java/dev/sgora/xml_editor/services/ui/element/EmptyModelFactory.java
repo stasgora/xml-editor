@@ -1,5 +1,8 @@
 package dev.sgora.xml_editor.services.ui.element;
 
+import dev.sgora.xml_editor.services.Utils;
+import jdk.jshell.execution.Util;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -20,7 +23,7 @@ public class EmptyModelFactory {
 
 	public static <M> M createEmptyModel(Class<M> modelClass, Type type) {
 		try {
-			return isClassInternal(modelClass) ? createLocalModel(modelClass) : createRemoteModel(modelClass, type);
+			return Utils.isClassInternal(modelClass) ? createLocalModel(modelClass) : createRemoteModel(modelClass, type);
 		} catch (InstantiationException | InvocationTargetException | IllegalAccessException | DatatypeConfigurationException e) {
 			logger.log(Level.WARNING, "Creating model instance failed", e);
 			return null;
@@ -62,7 +65,4 @@ public class EmptyModelFactory {
 		return DatatypeFactory.newInstance().newXMLGregorianCalendarDate(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), 0);
 	}
 
-	private static boolean isClassInternal(Class clazz) {
-		return clazz.getPackageName().startsWith("dev.sgora");
-	}
 }
