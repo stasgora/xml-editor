@@ -6,14 +6,11 @@ import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
 import dev.sgora.xml_editor.services.ui.dialog.DialogService;
 import dev.sgora.xml_editor.services.ui.dialog.FileChooserAction;
-import dev.sgora.xml_editor.services.ui.element.EmptyModelFactory;
-import dev.sgora.xml_editor.services.ui.element.UIElementFactory;
 import dev.sgora.xml_editor.services.validation.ValidationException;
-import dev.sgora.xml_editor.services.validation.ValidationService;
+import dev.sgora.xml_editor.services.validation.XMLService;
 import javafx.stage.FileChooser;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -25,16 +22,16 @@ public class WorkspaceActionService implements WorkspaceAction {
 
 	private DialogService dialogService;
 	private final Model<AccountStatement> model;
-	private ValidationService validationService;
+	private XMLService XMLService;
 
 	private static final FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("XML Documents", "*.xml");
 	private static final String OPEN_DOC_TITLE = "Open Document";
 
 	@Inject
-	private WorkspaceActionService(DialogService dialogService, Model<AccountStatement> model, ValidationService validationService) {
+	private WorkspaceActionService(DialogService dialogService, Model<AccountStatement> model, XMLService XMLService) {
 		this.dialogService = dialogService;
 		this.model = model;
-		this.validationService = validationService;
+		this.XMLService = XMLService;
 	}
 
 	@Override
@@ -43,7 +40,7 @@ public class WorkspaceActionService implements WorkspaceAction {
 		if(location == null)
 			return;
 		try {
-			model.setValue(validationService.loadXML(location));
+			model.setValue(XMLService.loadXML(location));
 			model.setFile(location);
 			model.notifyListeners();
 		} catch (ValidationException e) {
@@ -53,13 +50,13 @@ public class WorkspaceActionService implements WorkspaceAction {
 
 	@Override
 	public void newDocumentAction() {
-		model.setValue(validationService.createEmptyXML());
+		model.setValue(XMLService.createEmptyXML());
 		model.notifyListeners();
 	}
 
 	@Override
 	public void saveDocumentAction() {
-		if(validationService.errorHandler.documentHasErrors()) {
+		if(XMLService.errorHandler.documentHasErrors()) {
 			dialogService.showErrorDialog("Save Document", "Saving failed", "There are errors remaining");
 			return;
 		}
@@ -67,7 +64,7 @@ public class WorkspaceActionService implements WorkspaceAction {
 		if(location == null)
 			return;
 		try(FileOutputStream output = new FileOutputStream(location)) {
-			output.write(validationService.serializeXML().toByteArray());
+			output.write(XMLService.serializeXML().toByteArray());
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "Saving XML failed", e);
 		}
@@ -82,6 +79,6 @@ public class WorkspaceActionService implements WorkspaceAction {
 
 	@Override
 	public void validateDocumentAction() {
-		validationService.validateXML();
+		XMLService.validateXML();
 	}
 }

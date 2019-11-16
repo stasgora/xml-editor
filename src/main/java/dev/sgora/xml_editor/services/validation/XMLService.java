@@ -31,7 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Singleton
-public class ValidationService {
+public class XMLService {
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private Binder<Node> binder;
@@ -42,7 +42,7 @@ public class ValidationService {
 	public ValidationErrorHandler errorHandler;
 
 	@Inject
-	private ValidationService(ValidationErrorHandler errorHandler) {
+	private XMLService(ValidationErrorHandler errorHandler) {
 		this.errorHandler = errorHandler;
 		try {
 			var factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);

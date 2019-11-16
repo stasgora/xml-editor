@@ -5,7 +5,6 @@ import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
 import dev.sgora.xml_editor.services.ui.ModelUIMapper;
 import dev.sgora.xml_editor.services.ui.WorkspaceAction;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
