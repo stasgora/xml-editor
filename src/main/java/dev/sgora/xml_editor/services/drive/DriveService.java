@@ -61,4 +61,8 @@ public class DriveService {
 			throw new DriveException("Saving file to Drive failed", e);
 		}
 	}
+
+	public String[] getFileList() {
+		return new String[] {"1", "2"};
+	}
 }

@@ -53,7 +53,7 @@ public class ValidationErrorHandler implements ValidationEventHandler {
 	private void addErrorMessage(String message, Object object) {
 		Optional<ComplexElement> element = model.elements.stream().filter(elem -> elem.modelValue == object).findFirst();
 		if(element.isEmpty()) {
-			logger.log(Level.WARNING, "Invalid model object is not present in mapper maps");
+			logger.log(Level.WARNING, "Model object is not present in mapper maps");
 			return;
 		}
 		String errorMessage = transformMessage(message);

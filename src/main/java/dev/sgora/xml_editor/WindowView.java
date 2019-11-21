@@ -3,11 +3,13 @@ package dev.sgora.xml_editor;
 import com.google.inject.Inject;
 import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
+import dev.sgora.xml_editor.services.drive.DriveWorkspaceAction;
 import dev.sgora.xml_editor.services.ui.ModelUIMapper;
 import dev.sgora.xml_editor.services.ui.WorkspaceAction;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -25,19 +27,25 @@ public class WindowView {
 	public Pane infoRoot;
 	public Pane historyRoot;
 
+	public Menu driveLoadMenu;
+	public MenuItem driveSaveMenuItem;
+
 	private Parent root;
 	private Model<AccountStatement> model;
 	private WorkspaceAction workspaceAction;
 	private Stage window;
 
 	@Inject
-	void init(Stage window, Parent root, WorkspaceAction workspaceAction, Model<AccountStatement> model, ModelUIMapper uiMapper) {
+	void init(Stage window, Parent root, WorkspaceAction workspaceAction, DriveWorkspaceAction driveWorkspaceAction, Model<AccountStatement> model, ModelUIMapper uiMapper) {
 		this.root = root;
 		this.model = model;
 		this.workspaceAction = workspaceAction;
 		this.window = window;
 
+		driveWorkspaceAction.init(driveLoadMenu);
+		driveWorkspaceAction.refreshDriveFiles();
 		uiMapper.init(infoRoot, historyRoot);
+
 		setScene();
 		bindEvents();
 	}

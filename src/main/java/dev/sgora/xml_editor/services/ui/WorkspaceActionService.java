@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import dev.sgora.xml_editor.model.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
+import dev.sgora.xml_editor.services.drive.DriveWorkspaceAction;
 import dev.sgora.xml_editor.services.ui.dialog.DialogService;
 import dev.sgora.xml_editor.services.ui.dialog.FileChooserAction;
 import dev.sgora.xml_editor.services.validation.ValidationException;
@@ -21,6 +22,7 @@ public class WorkspaceActionService implements WorkspaceAction {
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private DialogService dialogService;
+	private DriveWorkspaceAction driveWorkspaceAction;
 	private final Model<AccountStatement> model;
 	private XMLService XMLService;
 
@@ -28,8 +30,9 @@ public class WorkspaceActionService implements WorkspaceAction {
 	private static final String OPEN_DOC_TITLE = "Open Document";
 
 	@Inject
-	private WorkspaceActionService(DialogService dialogService, Model<AccountStatement> model, XMLService XMLService) {
+	private WorkspaceActionService(DialogService dialogService, DriveWorkspaceAction driveWorkspaceAction, Model<AccountStatement> model, XMLService XMLService) {
 		this.dialogService = dialogService;
+		this.driveWorkspaceAction = driveWorkspaceAction;
 		this.model = model;
 		this.XMLService = XMLService;
 	}

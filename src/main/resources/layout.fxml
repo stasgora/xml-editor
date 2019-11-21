@@ -6,13 +6,17 @@
 <VBox styleClass="root" fx:controller="dev.sgora.xml_editor.WindowView" xmlns:fx="http://javafx.com/fxml">
 	<MenuBar>
 		<Menu text="File">
-			<MenuItem fx:id="newMenuItem" visible="false" text="New" accelerator="Ctrl+N"/>
+			<MenuItem fx:id="newMenuItem" text="New" accelerator="Ctrl+N"/>
 			<MenuItem fx:id="openMenuItem" text="Open" accelerator="Ctrl+O"/>
 			<SeparatorMenuItem/>
 			<MenuItem fx:id="saveMenuItem" text="Save" accelerator="Ctrl+S"/>
 			<MenuItem fx:id="exportMenuItem" visible="false" text="Export to PDF" accelerator="Ctrl+E"/>
 			<MenuItem fx:id="closeMenuItem" text="Close" accelerator="Ctrl+Q"/>
 			<MenuItem fx:id="quitMenuItem" text="Quit" accelerator="Ctrl+Shift+Q"/>
+		</Menu>
+		<Menu text="Drive">
+			<Menu fx:id="driveLoadMenu" text="Load"/>
+			<MenuItem fx:id="driveSaveMenuItem" text="Save"/>
 		</Menu>
 		<Menu text="Debug" visible="false">
 			<MenuItem fx:id="validateMenuItem" text="Validate" accelerator="Ctrl+R"/>
