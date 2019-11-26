@@ -2,13 +2,13 @@ package dev.sgora.xml_editor.services.ui;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import dev.sgora.xml_editor.model.AccountStatement;
+import dev.sgora.xml_editor.model.FileType;
+import dev.sgora.xml_editor.model.xml.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
-import dev.sgora.xml_editor.services.drive.DriveWorkspaceAction;
 import dev.sgora.xml_editor.services.ui.dialog.DialogService;
 import dev.sgora.xml_editor.services.ui.dialog.FileChooserAction;
-import dev.sgora.xml_editor.services.validation.ValidationException;
-import dev.sgora.xml_editor.services.validation.XMLService;
+import dev.sgora.xml_editor.services.xml.ValidationException;
+import dev.sgora.xml_editor.services.xml.XMLService;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -22,7 +22,6 @@ public class WorkspaceActionService implements WorkspaceAction {
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private DialogService dialogService;
-	private DriveWorkspaceAction driveWorkspaceAction;
 	private final Model<AccountStatement> model;
 	private XMLService XMLService;
 
@@ -30,9 +29,8 @@ public class WorkspaceActionService implements WorkspaceAction {
 	private static final String OPEN_DOC_TITLE = "Open Document";
 
 	@Inject
-	private WorkspaceActionService(DialogService dialogService, DriveWorkspaceAction driveWorkspaceAction, Model<AccountStatement> model, XMLService XMLService) {
+	private WorkspaceActionService(DialogService dialogService, Model<AccountStatement> model, XMLService XMLService) {
 		this.dialogService = dialogService;
-		this.driveWorkspaceAction = driveWorkspaceAction;
 		this.model = model;
 		this.XMLService = XMLService;
 	}
@@ -43,8 +41,7 @@ public class WorkspaceActionService implements WorkspaceAction {
 		if(location == null)
 			return;
 		try {
-			model.setValue(XMLService.loadXML(location));
-			model.setFile(location);
+			model.set(XMLService.loadXML(location), location.getName(), FileType.LOCAL);
 			model.notifyListeners();
 		} catch (ValidationException e) {
 			dialogService.showErrorDialog(OPEN_DOC_TITLE, "Parsing document failed", "No document will be loaded");
@@ -53,7 +50,7 @@ public class WorkspaceActionService implements WorkspaceAction {
 
 	@Override
 	public void newDocumentAction() {
-		model.setValue(XMLService.createEmptyXML());
+		model.set(XMLService.createEmptyXML(), null, null);
 		model.notifyListeners();
 	}
 
@@ -75,8 +72,7 @@ public class WorkspaceActionService implements WorkspaceAction {
 
 	@Override
 	public void closeDocumentAction() {
-		model.setValue(null);
-		model.setFile(null);
+		model.set(null, null, null);
 		model.notifyListeners();
 	}
 

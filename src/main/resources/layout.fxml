@@ -16,7 +16,7 @@
 		</Menu>
 		<Menu text="Drive">
 			<Menu fx:id="driveLoadMenu" text="Load"/>
-			<MenuItem fx:id="driveSaveMenuItem" text="Save"/>
+			<MenuItem fx:id="driveSaveMenuItem" disable="true" text="Save"/>
 		</Menu>
 		<Menu text="Debug" visible="false">
 			<MenuItem fx:id="validateMenuItem" text="Validate" accelerator="Ctrl+R"/>

@@ -3,10 +3,7 @@ package dev.sgora.xml_editor.services.ui.dialog;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogPane;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
@@ -40,6 +37,12 @@ public class DialogService {
 			return projectFileChooser.showOpenDialog(window);
 		}
 		return null;
+	}
+
+	public String showTextDialog(String title) {
+		var dialog = new TextInputDialog("");
+		dialog.setHeaderText(title);
+		return dialog.showAndWait().orElse(null);
 	}
 
 	public Optional<ButtonType> showErrorDialog(String title, String header, String content) {

@@ -9,7 +9,9 @@ import java.util.List;
 
 public class Model<M> extends Observable {
 	private M value;
-	private File file;
+	private String fileName;
+	private FileType fileType;
+
 	public final List<ComplexElement> elements = new ArrayList<>();
 	public final List<ComplexElement> rootElements = new ArrayList<>();
 
@@ -17,8 +19,11 @@ public class Model<M> extends Observable {
 		return value;
 	}
 
-	public void setValue(M value) {
+	public void set(M value, String fileName, FileType fileType) {
 		this.value = value;
+		this.fileName = fileName;
+		this.fileType = fileType;
+
 		elements.clear();
 		rootElements.clear();
 		onValueChanged();
@@ -30,12 +35,11 @@ public class Model<M> extends Observable {
 			rootElements.add(element);
 	}
 
-	public File getFile() {
-		return file;
+	public String getFileName() {
+		return fileName;
 	}
 
-	public void setFile(File file) {
-		this.file = file;
-		onValueChanged();
+	public FileType getFileType() {
+		return fileType;
 	}
 }

@@ -4,7 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import dev.sgora.xml_editor.services.WindowModule;
 import dev.sgora.xml_editor.services.ui.UIModule;
-import dev.sgora.xml_editor.services.validation.ValidationModule;
+import dev.sgora.xml_editor.services.xml.XMLModule;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,7 +18,7 @@ public class XMLEditor extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/layout.fxml"));
         Parent root = loader.load();
 
-        injector = Guice.createInjector(new WindowModule(stage, root), new UIModule(), new ValidationModule());
+        injector = Guice.createInjector(new WindowModule(stage, root), new UIModule(), new XMLModule());
 
         WindowView windowView = loader.getController();
         injector.injectMembers(windowView);

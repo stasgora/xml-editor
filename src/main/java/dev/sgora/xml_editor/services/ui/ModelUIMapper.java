@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import dev.sgora.xml_editor.element.ComplexElement;
 import dev.sgora.xml_editor.element.position.FieldPosition;
-import dev.sgora.xml_editor.model.AccountStatement;
+import dev.sgora.xml_editor.model.xml.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
 import javafx.scene.layout.Pane;
 

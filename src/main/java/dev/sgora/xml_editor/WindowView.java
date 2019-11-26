@@ -1,7 +1,7 @@
 package dev.sgora.xml_editor;
 
 import com.google.inject.Inject;
-import dev.sgora.xml_editor.model.AccountStatement;
+import dev.sgora.xml_editor.model.xml.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
 import dev.sgora.xml_editor.services.drive.DriveWorkspaceAction;
 import dev.sgora.xml_editor.services.ui.ModelUIMapper;
@@ -42,8 +42,7 @@ public class WindowView {
 		this.workspaceAction = workspaceAction;
 		this.window = window;
 
-		driveWorkspaceAction.init(driveLoadMenu);
-		driveWorkspaceAction.refreshDriveFiles();
+		driveWorkspaceAction.init(driveLoadMenu, driveSaveMenuItem);
 		uiMapper.init(infoRoot, historyRoot);
 
 		setScene();
@@ -60,13 +59,15 @@ public class WindowView {
 		validateMenuItem.setOnAction(event -> workspaceAction.validateDocumentAction());
 
 		model.addListener(() -> {
-			String windowName = "XML Editor";
-			if(model.getFile() != null) {
-				String fileName = model.getFile().getName();
-				windowName = fileName.substring(0, fileName.length() - 4) + " - " + windowName;
+			String windowName = "";
+			if(model.getFileName() != null) {
+				String fileName = model.getFileName();
+				windowName = fileName.substring(0, fileName.length() - 4) + " - ";
 			} else if(model.getValue() != null)
-				windowName = "Untitled - " + windowName;
-			window.setTitle(windowName);
+				windowName = "Untitled - ";
+			if(!windowName.isEmpty())
+				windowName = model.getFileType().name + ": " + windowName;
+			window.setTitle(windowName + "XML Editor");
 		});
 	}
 

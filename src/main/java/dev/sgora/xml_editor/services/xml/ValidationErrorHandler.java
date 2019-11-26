@@ -1,22 +1,19 @@
-package dev.sgora.xml_editor.services.validation;
+package dev.sgora.xml_editor.services.xml;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import dev.sgora.xml_editor.element.ComplexElement;
 import dev.sgora.xml_editor.element.Element;
 import dev.sgora.xml_editor.element.position.FieldPosition;
-import dev.sgora.xml_editor.model.AccountStatement;
+import dev.sgora.xml_editor.model.xml.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
 import dev.sgora.xml_editor.services.Utils;
-import dev.sgora.xml_editor.services.ui.ModelUIMapper;
 import dev.sgora.xml_editor.services.ui.element.UIElementFactory;
-import javafx.scene.control.MenuItem;
 
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;

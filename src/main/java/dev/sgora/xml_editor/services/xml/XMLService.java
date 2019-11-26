@@ -1,13 +1,12 @@
-package dev.sgora.xml_editor.services.validation;
+package dev.sgora.xml_editor.services.xml;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import dev.sgora.xml_editor.XMLEditor;
 import dev.sgora.xml_editor.element.ComplexElement;
-import dev.sgora.xml_editor.element.ListElement;
 import dev.sgora.xml_editor.element.ValueElement;
-import dev.sgora.xml_editor.model.AccountStatement;
-import dev.sgora.xml_editor.model.ObjectFactory;
+import dev.sgora.xml_editor.model.xml.AccountStatement;
+import dev.sgora.xml_editor.model.xml.ObjectFactory;
 import dev.sgora.xml_editor.services.ui.element.EmptyModelFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -27,6 +26,7 @@ import javax.xml.validation.SchemaFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,18 +55,31 @@ public class XMLService {
 		ComplexElement.onElementsChanged = this::validateXML;
 	}
 
-	public AccountStatement loadXML(File xmlFile) throws ValidationException {
+	public AccountStatement loadXML(InputStream xmlFile) throws ValidationException {
 		try {
-			Document document = documentBuilder.parse(xmlFile);
-			createBinder();
-
-			model = binder.unmarshal(document, AccountStatement.class);
-			node = binder.getXMLNode(model);
-			return model.getValue();
+			var model = loadXML(documentBuilder.parse(xmlFile));
+			xmlFile.close();
+			return model;
 		} catch (JAXBException | SAXException | IOException e) {
 			logger.log(Level.SEVERE, "Loading XML failed", e);
 			throw new ValidationException("Loading XML failed", e);
 		}
+	}
+
+	public AccountStatement loadXML(File xmlFile) throws ValidationException {
+		try {
+			return loadXML(documentBuilder.parse(xmlFile));
+		} catch (JAXBException | SAXException | IOException e) {
+			logger.log(Level.SEVERE, "Loading XML failed", e);
+			throw new ValidationException("Loading XML failed", e);
+		}
+	}
+
+	private AccountStatement loadXML(Document document) throws JAXBException {
+		createBinder();
+		model = binder.unmarshal(document, AccountStatement.class);
+		node = binder.getXMLNode(model);
+		return model.getValue();
 	}
 
 	public AccountStatement createEmptyXML() {

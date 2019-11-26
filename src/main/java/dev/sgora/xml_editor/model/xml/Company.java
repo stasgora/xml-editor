@@ -6,7 +6,7 @@
 //
 
 
-package dev.sgora.xml_editor.model;
+package dev.sgora.xml_editor.model.xml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -15,16 +15,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for person complex type.
+ * <p>Java class for company complex type.
  *
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="person">
+ * &lt;complexType name="company">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="name" type="{}fullName"/>
+ *         &lt;element name="name" type="{}companyName"/>
  *         &lt;element name="address" type="{}address"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -33,14 +33,14 @@ import javax.xml.bind.annotation.XmlType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "person", propOrder = {
+@XmlType(name = "company", propOrder = {
 		"name",
 		"address"
 })
-public class Person {
+public class Company {
 
 	@XmlElement(required = true)
-	protected FullName name;
+	protected CompanyName name;
 	@XmlElement(required = true)
 	protected Address address;
 
@@ -48,9 +48,9 @@ public class Person {
 	 * Gets the value of the name property.
 	 *
 	 * @return possible object is
-	 * {@link FullName }
+	 * {@link CompanyName }
 	 */
-	public FullName getName() {
+	public CompanyName getName() {
 		return name;
 	}
 
@@ -58,9 +58,9 @@ public class Person {
 	 * Sets the value of the name property.
 	 *
 	 * @param value allowed object is
-	 *              {@link FullName }
+	 *              {@link CompanyName }
 	 */
-	public void setName(FullName value) {
+	public void setName(CompanyName value) {
 		this.name = value;
 	}
 

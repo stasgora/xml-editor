@@ -5,6 +5,7 @@ import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.FileContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -13,16 +14,23 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import dev.sgora.xml_editor.XMLEditor;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Singleton
 public class DriveService {
@@ -51,18 +59,51 @@ public class DriveService {
 		}
 	}
 
-	public void saveFile() throws DriveException {
+	public File saveFile(String name, ByteArrayOutputStream stream) throws DriveException {
 		try {
-			File fileMetadata = new File();
-			fileMetadata.setName("account-statement-2.xml");
-			FileContent content = new FileContent("text/plain", new java.io.File("xml/account-statement-1.xml"));
-			File file = driveService.files().create(fileMetadata, content).setFields("id").execute();
+			File file = new File();
+			file.setName(name);
+			ByteArrayContent content = new ByteArrayContent("text/xml", stream.toByteArray());
+			File existingFile = fileExists(name);
+			if(existingFile == null)
+				return driveService.files().create(file, content).setFields("id").execute();
+			return driveService.files().update(existingFile.getId(), file, content).setFields("id").execute();
 		} catch (IOException e) {
 			throw new DriveException("Saving file to Drive failed", e);
 		}
 	}
 
-	public String[] getFileList() {
-		return new String[] {"1", "2"};
+	public ByteArrayInputStream openFile(String fileID) throws DriveException {
+		try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			driveService.files().get(fileID).executeMediaAndDownloadTo(outputStream);
+			return new ByteArrayInputStream(outputStream.toByteArray());
+		} catch (IOException e) {
+			throw new DriveException("Saving file to Drive failed", e);
+		}
+	}
+
+	public List<File> getFileList() throws DriveException {
+		return getFileList("name contains '.xml'");
+	}
+
+	public File fileExists(String name) throws DriveException {
+		var list = getFileList("name = '" + name + "'");
+		return !list.isEmpty() ? list.get(0) : null;
+	}
+
+	private List<File> getFileList(String query) throws DriveException {
+		try {
+			String pageToken = null;
+			List<File> names = new ArrayList<>();
+			do {
+				FileList list = driveService.files().list().setQ(query).setSpaces("drive")
+						.setFields("nextPageToken, files(id, name)").setPageToken(pageToken).execute();
+				names.addAll(list.getFiles());
+				pageToken = list.getNextPageToken();
+			} while (pageToken != null);
+			return names;
+		} catch (IOException e) {
+			throw new DriveException("Listing Drive files failed", e);
+		}
 	}
 }

@@ -6,7 +6,7 @@
 //
 
 
-package dev.sgora.xml_editor.model;
+package dev.sgora.xml_editor.model.xml;
 
 import javax.xml.bind.annotation.*;
 
