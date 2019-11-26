@@ -139,5 +139,10 @@
 			<artifactId>google-oauth-client-jetty</artifactId>
 			<version>1.30.4</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.12.1</version>
+		</dependency>
 	</dependencies>
 </project>
