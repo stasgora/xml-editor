@@ -7,6 +7,7 @@ import dev.sgora.xml_editor.model.xml.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
 import dev.sgora.xml_editor.services.ui.dialog.DialogService;
 import dev.sgora.xml_editor.services.ui.dialog.FileChooserAction;
+import dev.sgora.xml_editor.services.webdata.WebDataService;
 import dev.sgora.xml_editor.services.xml.ValidationException;
 import dev.sgora.xml_editor.services.xml.XMLService;
 import javafx.stage.FileChooser;
@@ -29,7 +30,7 @@ public class WorkspaceActionService implements WorkspaceAction {
 	private static final String OPEN_DOC_TITLE = "Open Document";
 
 	@Inject
-	private WorkspaceActionService(DialogService dialogService, Model<AccountStatement> model, XMLService XMLService) {
+	private WorkspaceActionService(DialogService dialogService, Model<AccountStatement> model, XMLService XMLService, WebDataService webDataService) {
 		this.dialogService = dialogService;
 		this.model = model;
 		this.XMLService = XMLService;

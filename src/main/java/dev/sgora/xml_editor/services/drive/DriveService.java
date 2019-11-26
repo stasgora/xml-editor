@@ -63,9 +63,7 @@ public class DriveService {
 		try {
 			File file = new File();
 			file.setName(name);
-			var bytes = stream.toByteArray();
-			System.out.println(new String(bytes));
-			ByteArrayContent content = new ByteArrayContent("text/xml", bytes);
+			ByteArrayContent content = new ByteArrayContent("text/xml", stream.toByteArray());
 			File existingFile = fileExists(name);
 			if(existingFile == null)
 				return driveService.files().create(file, content).setFields(RESPONSE_FIELDS).execute();
