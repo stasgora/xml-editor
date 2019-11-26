@@ -11,13 +11,12 @@ import dev.sgora.xml_editor.services.xml.ValidationException;
 import dev.sgora.xml_editor.services.xml.XMLService;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextInputDialog;
 
 import java.util.stream.Collectors;
 
 @Singleton
 public class DriveWorkspaceAction {
-	private static final String OPEN_DOC_TITLE = "Drive Document";
+	private static final String DIALOG_TITLE = "Drive Document";
 
 	private DialogService dialogService;
 	private DriveService driveService;
@@ -44,16 +43,23 @@ public class DriveWorkspaceAction {
 	}
 
 	private void saveDriveDocument() {
+		if(XMLService.errorHandler.documentHasErrors()) {
+			dialogService.showErrorDialog(DIALOG_TITLE, "Saving failed", "There are errors remaining");
+			return;
+		}
 		try {
 			String name = model.getFileName();
-			while (name == null || name.isEmpty())
-				name = dialogService.showTextDialog("Enter file name");
+			do
+				name = dialogService.showTextDialog("Enter file name", name);
+			while (name == null || name.isEmpty());
 			if(!name.endsWith(".xml"))
 				name += ".xml";
 			var file = driveService.saveFile(name, XMLService.serializeXML());
 			driveLoadMenu.getItems().add(newDriveEntry(file));
+			model.move(name, FileType.DRIVE);
+			model.notifyListeners();
 		} catch (DriveException e) {
-			dialogService.showErrorDialog(OPEN_DOC_TITLE, "Saving document failed", "No document will be saved");
+			dialogService.showErrorDialog(DIALOG_TITLE, "Saving document failed", "No document will be saved");
 		}
 	}
 
@@ -62,7 +68,7 @@ public class DriveWorkspaceAction {
 			var files = driveService.getFileList();
 			driveLoadMenu.getItems().setAll(files.stream().map(this::newDriveEntry).collect(Collectors.toList()));
 		} catch (DriveException e) {
-			dialogService.showErrorDialog(OPEN_DOC_TITLE, "Acquiring documents failed", "No documents available to open");
+			dialogService.showErrorDialog(DIALOG_TITLE, "Acquiring documents failed", "No documents available to open");
 		}
 	}
 
@@ -71,8 +77,9 @@ public class DriveWorkspaceAction {
 			model.set(XMLService.loadXML(driveService.openFile((String) item.getUserData())), item.getText(), FileType.DRIVE);
 			model.notifyListeners();
 		} catch (ValidationException | DriveException e) {
-			dialogService.showErrorDialog(OPEN_DOC_TITLE, "Opening document failed", "No document will be loaded");
+			dialogService.showErrorDialog(DIALOG_TITLE, "Opening document failed", "No document will be loaded");
 		}
+		refreshDriveFiles();
 	}
 
 	private MenuItem newDriveEntry(File file) {

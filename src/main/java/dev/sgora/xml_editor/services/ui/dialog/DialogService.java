@@ -39,8 +39,8 @@ public class DialogService {
 		return null;
 	}
 
-	public String showTextDialog(String title) {
-		var dialog = new TextInputDialog("");
+	public String showTextDialog(String title, String value) {
+		var dialog = new TextInputDialog(value);
 		dialog.setHeaderText(title);
 		return dialog.showAndWait().orElse(null);
 	}

@@ -79,6 +79,7 @@ public class XMLService {
 		createBinder();
 		model = binder.unmarshal(document, AccountStatement.class);
 		node = binder.getXMLNode(model);
+		validateXML();
 		return model.getValue();
 	}
 

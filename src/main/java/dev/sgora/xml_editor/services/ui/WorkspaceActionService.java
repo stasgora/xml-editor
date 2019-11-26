@@ -50,7 +50,7 @@ public class WorkspaceActionService implements WorkspaceAction {
 
 	@Override
 	public void newDocumentAction() {
-		model.set(XMLService.createEmptyXML(), null, null);
+		model.set(XMLService.createEmptyXML(), null, FileType.LOCAL);
 		model.notifyListeners();
 	}
 
@@ -65,6 +65,8 @@ public class WorkspaceActionService implements WorkspaceAction {
 			return;
 		try(FileOutputStream output = new FileOutputStream(location)) {
 			output.write(XMLService.serializeXML().toByteArray());
+			model.move(location.getName(), FileType.LOCAL);
+			model.notifyListeners();
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "Saving XML failed", e);
 		}

@@ -29,6 +29,12 @@ public class Model<M> extends Observable {
 		onValueChanged();
 	}
 
+	public void move(String fileName, FileType fileType) {
+		this.fileName = fileName;
+		this.fileType = fileType;
+		onValueChanged();
+	}
+
 	public void addElement(ComplexElement element) {
 		elements.add(element);
 		if(element.root)
