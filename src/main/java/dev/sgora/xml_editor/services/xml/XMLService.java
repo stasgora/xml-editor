@@ -89,6 +89,7 @@ public class XMLService {
 		try {
 			node = documentBuilder.newDocument();
 			binder.marshal(model, node);
+			node = node.getFirstChild();
 		} catch (JAXBException e) {
 			logger.log(Level.SEVERE, "Marshaling XML failed", e);
 		}

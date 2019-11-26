@@ -6,6 +6,7 @@ import dev.sgora.xml_editor.element.ComplexElement;
 import dev.sgora.xml_editor.element.position.FieldPosition;
 import dev.sgora.xml_editor.model.xml.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
+import dev.sgora.xml_editor.services.xml.XMLService;
 import javafx.scene.layout.Pane;
 
 import java.lang.reflect.Field;
@@ -17,14 +18,16 @@ public class ModelUIMapper {
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private final Model<AccountStatement> model;
+	private XMLService xmlService;
 
 	private Pane infoRoot;
 	private Pane historyRoot;
 	private int rootFieldsCount;
 
 	@Inject
-	private ModelUIMapper(Model<AccountStatement> model) {
+	private ModelUIMapper(Model<AccountStatement> model, XMLService xmlService) {
 		this.model = model;
+		this.xmlService = xmlService;
 		ComplexElement.registerElement = model::addElement;
 		model.addListener(this::mapModelToUI);
 	}
@@ -48,6 +51,7 @@ public class ModelUIMapper {
 				ComplexElement element = new ComplexElement(rootFields[i].get(model.getValue()), new FieldPosition(rootFields[i], model.getValue()), true);
 				root.getChildren().add(element.uiElement);
 			}
+			xmlService.validateXML();
 		} catch (IllegalAccessException e) {
 			logger.log(Level.WARNING, "Mapping model failed", e);
 		}
