@@ -6,7 +6,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.ByteArrayContent;
-import com.google.api.client.http.FileContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -25,16 +24,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Singleton
 public class DriveService {
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
+	private final static String FILE_QUERY = "trashed = false and 'root' in parents and mimeType != 'application/vnd.google-apps.folder'";
+	private final static String RESPONSE_FIELDS = "id, name";
+
 	private static final String USER = "user";
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
@@ -66,8 +66,8 @@ public class DriveService {
 			ByteArrayContent content = new ByteArrayContent("text/xml", stream.toByteArray());
 			File existingFile = fileExists(name);
 			if(existingFile == null)
-				return driveService.files().create(file, content).setFields("id").execute();
-			return driveService.files().update(existingFile.getId(), file, content).setFields("id").execute();
+				return driveService.files().create(file, content).setFields(RESPONSE_FIELDS).execute();
+			return driveService.files().update(existingFile.getId(), file, content).setFields(RESPONSE_FIELDS).execute();
 		} catch (IOException e) {
 			throw new DriveException("Saving file to Drive failed", e);
 		}
@@ -83,11 +83,11 @@ public class DriveService {
 	}
 
 	public List<File> getFileList() throws DriveException {
-		return getFileList("name contains '.xml'");
+		return getFileList("name contains '.xml' and " + FILE_QUERY);
 	}
 
 	public File fileExists(String name) throws DriveException {
-		var list = getFileList("name = '" + name + "'");
+		var list = getFileList("name = '" + name + "' and " + FILE_QUERY);
 		return !list.isEmpty() ? list.get(0) : null;
 	}
 

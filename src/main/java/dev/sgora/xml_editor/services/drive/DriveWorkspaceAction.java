@@ -39,7 +39,7 @@ public class DriveWorkspaceAction {
 		this.driveSaveMenuItem = driveSaveMenuItem;
 
 		refreshDriveFiles();
-		model.addListener(() -> driveSaveMenuItem.setDisable(model.getFileType() != FileType.DRIVE));
+		model.addListener(() -> driveSaveMenuItem.setDisable(model.getValue() == null));
 		driveSaveMenuItem.setOnAction(event -> saveDriveDocument());
 	}
 
@@ -48,7 +48,9 @@ public class DriveWorkspaceAction {
 			String name = model.getFileName();
 			while (name == null || name.isEmpty())
 				name = dialogService.showTextDialog("Enter file name");
-			var file = driveService.saveFile(name + ".xml", XMLService.serializeXML());
+			if(!name.endsWith(".xml"))
+				name += ".xml";
+			var file = driveService.saveFile(name, XMLService.serializeXML());
 			driveLoadMenu.getItems().add(newDriveEntry(file));
 		} catch (DriveException e) {
 			dialogService.showErrorDialog(OPEN_DOC_TITLE, "Saving document failed", "No document will be saved");
