@@ -1,5 +1,6 @@
 package dev.sgora.xml_editor.element;
 
+import dev.sgora.observetree.Observable;
 import dev.sgora.xml_editor.element.position.ElementPosition;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Side;
@@ -10,7 +11,7 @@ import javafx.scene.control.MenuItem;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public abstract class Element<E extends Node, MV> {
+public abstract class Element<E extends Node, MV> extends Observable {
 	protected final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private static final String FIELD_ERROR_CLASS = "error-field";

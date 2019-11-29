@@ -46,6 +46,8 @@ public class ListElement<M extends List> extends ComplexElement<M> {
 				int index = position.removeElement(layout);
 				onElementsChanged.run();
 				children.remove(index);
+				onValueChanged();
+				notifyListeners();
 			}
 		});
 		removeField.setTooltip(new Tooltip("Remove item"));
@@ -60,6 +62,8 @@ public class ListElement<M extends List> extends ComplexElement<M> {
 			position.addElement(index, model, element);
 
 			onElementsChanged.run();
+			onValueChanged();
+			notifyListeners();
 		});
 		layout.getChildren().addAll(listElement.uiElement, removeField, addField);
 		return layout;

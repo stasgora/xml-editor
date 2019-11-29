@@ -28,6 +28,8 @@ public abstract class ValueElement<E extends Node, EV, MV> extends Element<E, MV
 			position.setModelValue(modelValue, uiElement);
 			clearErrors(true);
 			onModelUpdated.run();
+			onValueChanged();
+			notifyListeners();
 		} catch (IllegalAccessException e) {
 			logger.log(Level.SEVERE, "Setting model value failed", e);
 		} catch (ValueConversionError e) {

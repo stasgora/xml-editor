@@ -13,6 +13,7 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -50,7 +51,7 @@ public class EmptyModelFactory {
 			modelInstance = (M) "";
 		else if(List.class.isAssignableFrom(modelClass)) {
 			Type listType = ((ParameterizedType) type).getActualTypeArguments()[0];
-			modelInstance = (M) Arrays.asList(createEmptyModel((Class) listType, listType));
+			modelInstance = (M) new ArrayList<>(Arrays.asList(createEmptyModel((Class) listType, listType)));
 		} else if(Number.class.isAssignableFrom(modelClass)) {
 			if(BigInteger.class.isAssignableFrom(modelClass))
 				modelInstance = (M) BigInteger.ZERO;
