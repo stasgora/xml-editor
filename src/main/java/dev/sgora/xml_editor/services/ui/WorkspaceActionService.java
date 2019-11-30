@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import dev.sgora.xml_editor.model.FileType;
 import dev.sgora.xml_editor.model.xml.AccountStatement;
 import dev.sgora.xml_editor.model.Model;
+import dev.sgora.xml_editor.services.pdf.PDFService;
 import dev.sgora.xml_editor.services.ui.dialog.DialogService;
 import dev.sgora.xml_editor.services.ui.dialog.FileChooserAction;
 import dev.sgora.xml_editor.services.webdata.WebDataService;
@@ -25,20 +26,23 @@ public class WorkspaceActionService implements WorkspaceAction {
 	private DialogService dialogService;
 	private final Model<AccountStatement> model;
 	private XMLService XMLService;
+	private PDFService pdfService;
 
-	private static final FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("XML Documents", "*.xml");
+	private static final FileChooser.ExtensionFilter XML_FILTER = new FileChooser.ExtensionFilter("XML Documents", "*.xml");
+	private static final FileChooser.ExtensionFilter PDF_FILTER = new FileChooser.ExtensionFilter("PDF Documents", "*.pdf");
 	private static final String OPEN_DOC_TITLE = "Open Document";
 
 	@Inject
-	private WorkspaceActionService(DialogService dialogService, Model<AccountStatement> model, XMLService XMLService, WebDataService webDataService) {
+	private WorkspaceActionService(DialogService dialogService, Model<AccountStatement> model, XMLService XMLService, PDFService pdfService) {
 		this.dialogService = dialogService;
 		this.model = model;
 		this.XMLService = XMLService;
+		this.pdfService = pdfService;
 	}
 
 	@Override
 	public void openDocumentAction() {
-		File location = dialogService.showFileChooser(FileChooserAction.OPEN_DIALOG, OPEN_DOC_TITLE, filter);
+		File location = dialogService.showFileChooser(FileChooserAction.OPEN_DIALOG, OPEN_DOC_TITLE, XML_FILTER);
 		if(location == null)
 			return;
 		try {
@@ -57,11 +61,7 @@ public class WorkspaceActionService implements WorkspaceAction {
 
 	@Override
 	public void saveDocumentAction() {
-		if(XMLService.errorHandler.documentHasErrors()) {
-			dialogService.showErrorDialog("Save Document", "Saving failed", "There are errors remaining");
-			return;
-		}
-		File location = dialogService.showFileChooser(FileChooserAction.SAVE_DIALOG, "Save Document", filter);
+		File location = getSaveFile("Save Document", XML_FILTER);
 		if(location == null)
 			return;
 		try(FileOutputStream output = new FileOutputStream(location)) {
@@ -77,6 +77,22 @@ public class WorkspaceActionService implements WorkspaceAction {
 	public void closeDocumentAction() {
 		model.set(null, null, null);
 		model.notifyListeners();
+	}
+
+	@Override
+	public void exportDocumentAction() {
+		File location = getSaveFile("Export Document", PDF_FILTER);
+		if(location == null)
+			return;
+		pdfService.generatePDF(location);
+	}
+
+	private File getSaveFile(String title, FileChooser.ExtensionFilter filter) {
+		if(XMLService.errorHandler.documentHasErrors()) {
+			dialogService.showErrorDialog("Save Document", "Saving failed", "There are errors remaining");
+			return null;
+		}
+		return dialogService.showFileChooser(FileChooserAction.SAVE_DIALOG, title, filter);
 	}
 
 	@Override

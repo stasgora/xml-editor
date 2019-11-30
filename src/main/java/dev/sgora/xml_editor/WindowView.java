@@ -54,6 +54,7 @@ public class WindowView {
 		openMenuItem.setOnAction(event -> workspaceAction.openDocumentAction());
 		saveMenuItem.setOnAction(event -> workspaceAction.saveDocumentAction());
 		closeMenuItem.setOnAction(event -> workspaceAction.closeDocumentAction());
+		exportMenuItem.setOnAction(event -> workspaceAction.exportDocumentAction());
 		quitMenuItem.setOnAction(event -> Platform.exit());
 
 		validateMenuItem.setOnAction(event -> workspaceAction.validateDocumentAction());

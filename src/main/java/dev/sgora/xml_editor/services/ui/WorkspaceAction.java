@@ -9,5 +9,7 @@ public interface WorkspaceAction {
 
 	void closeDocumentAction();
 
+	void exportDocumentAction();
+
 	void validateDocumentAction();
 }

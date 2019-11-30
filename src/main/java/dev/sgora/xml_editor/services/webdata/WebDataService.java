@@ -14,11 +14,6 @@ public class WebDataService {
 
 	@Inject
 	public WebDataService() {
-		try {
-			System.out.println(requestStreet("00-023"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public String requestStreet(String code) throws IOException {
