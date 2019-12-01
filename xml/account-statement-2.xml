@@ -4,7 +4,7 @@
 	<bank>
 		<name type="S.A.">Bank Millennium</name>
 		<address>
-			<street>Stanisława Żaryna</street>
+			<street>Stanislawa Zaryna</street>
 			<number>2A</number>
 			<postCode>02-593</postCode>
 			<city>Warszawa</city>
@@ -39,13 +39,13 @@
 		<transaction>
 			<ordered>2018-11-21</ordered>
 			<processed>2018-11-21</processed>
-			<description>Wypłata kartą Mastercard w bankomacie</description>
+			<description>Wyplata karta Mastercard w bankomacie</description>
 			<amount>-300.00</amount>
 		</transaction>
 		<transaction>
 			<ordered>2018-11-11</ordered>
 			<processed>2018-11-11</processed>
-			<description>Spółdzielnia mieszkaniowa
+			<description>Spóldzielnia mieszkaniowa
 Oplata za czynsz, Listopad</description>
 			<amount>-730.00</amount>
 		</transaction>

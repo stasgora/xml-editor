@@ -7,13 +7,13 @@
 			<street>Strzegomska</street>
 			<number>42c</number>
 			<postCode>53-611</postCode>
-			<city>Wrocław</city>
+			<city>Wroclaw</city>
 		</address>
 	</bank>
 	<client>
 		<name>
 			<firstName>Alicja</firstName>
-			<lastName>Bawiała</lastName>
+			<lastName>Bawiala</lastName>
 		</name>
 		<address>
 			<street>Grabowska</street>
@@ -34,7 +34,7 @@
 		<transaction>
 			<ordered>2017-08-10</ordered>
 			<processed>2017-08-10</processed>
-			<description>Wypłata kartą Mastercard w bankomacie</description>
+			<description>Wyplata karta Mastercard w bankomacie</description>
 			<amount>-100.00</amount>
 		</transaction>
 		<transaction>
