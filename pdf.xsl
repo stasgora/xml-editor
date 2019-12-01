@@ -16,16 +16,89 @@
 					<fo:block margin-top="4em">
 						<fo:inline-container inline-progression-dimension="50%">
 							<xsl:apply-templates select="accountStatement/account"/>
+							<xsl:apply-templates select="accountStatement/period"/>
 						</fo:inline-container>
 						<fo:inline-container inline-progression-dimension="40%" margin-left="5em">
 							<xsl:apply-templates select="accountStatement/client"/>
 						</fo:inline-container>
 					</fo:block>
+					<xsl:apply-templates select="accountStatement/transactionHistory"/>
 				</fo:flow>
 			</fo:page-sequence>
 		</fo:root>
 	</xsl:template>
-	<xsl:template match="accountStatement/bank">
+	<xsl:template match="transactionHistory">
+		<fo:table margin-top="1.5em">
+			<fo:table-body>
+				<fo:table-row background-color="#cccccc" border-top="solid 0.4mm black" border-bottom="solid 0.4mm black">
+					<xsl:call-template name="cellText">
+						<xsl:with-param name="text" select="'Data wykonania'" />
+					</xsl:call-template>
+					<xsl:call-template name="cellText">
+						<xsl:with-param name="text" select="'Data ksiegowania'" />
+					</xsl:call-template>
+					<xsl:call-template name="cellText">
+						<xsl:with-param name="text" select="'Opis transakcji'" />
+					</xsl:call-template>
+					<xsl:call-template name="cellText">
+						<xsl:with-param name="text" select="'Kwota transakcji'" />
+					</xsl:call-template>
+					<xsl:call-template name="cellText">
+						<xsl:with-param name="text" select="'Saldo po transakcji'" />
+					</xsl:call-template>
+				</fo:table-row>
+				<xsl:for-each select="transaction">
+					<fo:table-row border-bottom="solid 0.2mm gray">
+						<xsl:apply-templates select="." />
+					</fo:table-row>
+				</xsl:for-each>
+			</fo:table-body>
+		</fo:table>
+	</xsl:template>
+	<xsl:template match="transaction">
+		<xsl:call-template name="cellText">
+			<xsl:with-param name="text" select="ordered" />
+		</xsl:call-template>
+		<xsl:call-template name="cellText">
+			<xsl:with-param name="text" select="processed" />
+		</xsl:call-template>
+		<xsl:call-template name="cellText">
+			<xsl:with-param name="text" select="description" />
+		</xsl:call-template>
+		<xsl:call-template name="cellText">
+			<xsl:with-param name="text" select="amount" />
+		</xsl:call-template>
+		<xsl:call-template name="cellText">
+			<xsl:with-param name="text" select="'n/a'" />
+		</xsl:call-template>
+	</xsl:template>
+	<xsl:template name="cellText">
+		<xsl:param name="text" />
+		<fo:table-cell padding=".4em">
+			<fo:block>
+				<xsl:value-of select="$text" />
+			</fo:block>
+		</fo:table-cell>
+	</xsl:template>
+	<xsl:template match="period">
+		<fo:block font-size="16pt" margin-top="1.5em">
+			<xsl:text>Historia transakcji</xsl:text>
+		</fo:block>
+		<fo:block>
+			<xsl:value-of select="concat('za okres ', from, ' do ', to)" />
+		</fo:block>
+		<fo:block margin-top="1.5em">
+			<xsl:call-template name="titleValue">
+				<xsl:with-param name="title" select="'Saldo poczatkowe'" />
+				<xsl:with-param name="value" select="@startBalance" />
+			</xsl:call-template>
+			<xsl:call-template name="titleValue">
+				<xsl:with-param name="title" select="'Saldo koncowe'" />
+				<xsl:with-param name="value" select="'n/a'" />
+			</xsl:call-template>
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="bank">
 		<fo:block>
 			<xsl:value-of select="concat(name, ' ', name/@type)"/>
 		</fo:block>
@@ -33,7 +106,7 @@
 			<xsl:value-of select="concat(address/street, ' ', address/number, ', ', address/postCode, ' ', address/city)"/>
 		</fo:block>
 	</xsl:template>
-	<xsl:template match="accountStatement/account">
+	<xsl:template match="account">
 		<xsl:call-template name="titleValue">
 			<xsl:with-param name="title" select="'Nr rachunku'" />
 			<xsl:with-param name="value" select="concat(substring(number, 1, 2), ' ', substring(number, 3, 4), ' ', substring(number, 7, 4), ' ', substring(number, 11, 4), ' ', substring(number, 15, 4), ' ', substring(number, 19, 4), ' ', substring(number, 23, 4))" />
@@ -73,7 +146,7 @@
 			</fo:inline>
 		</fo:block>
 	</xsl:template>
-	<xsl:template match="accountStatement/client">
+	<xsl:template match="client">
 		<fo:block font-weight="bold">
 			<xsl:value-of select="concat(name/firstName, ' ', name/lastName)"/>
 		</fo:block>
