@@ -81,7 +81,7 @@ public class WorkspaceActionService implements WorkspaceAction {
 
 	@Override
 	public void exportDocumentAction() {
-		File location = new File("test.pdf");//getSaveFile("Export Document", PDF_FILTER);
+		File location = getSaveFile("Export Document", PDF_FILTER);
 		if(location == null)
 			return;
 		pdfService.generatePDF(location);
