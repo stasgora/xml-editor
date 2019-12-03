@@ -74,7 +74,7 @@
 			<xsl:with-param name="text" select="amount" />
 		</xsl:call-template>
 		<xsl:call-template name="cellText">
-			<xsl:with-param name="text" select="'n/a'" />
+			<xsl:with-param name="text" select="balanceAfer" />
 		</xsl:call-template>
 	</xsl:template>
 	<xsl:template name="cellText">
@@ -99,7 +99,7 @@
 			</xsl:call-template>
 			<xsl:call-template name="titleValue">
 				<xsl:with-param name="title" select="'Saldo koncowe'" />
-				<xsl:with-param name="value" select="'n/a'" />
+				<xsl:with-param name="value" select="endBalance" />
 			</xsl:call-template>
 		</fo:block>
 	</xsl:template>
@@ -118,7 +118,7 @@
 		</xsl:call-template>
 		<xsl:call-template name="titleValue">
 			<xsl:with-param name="title" select="'IBAN'" />
-			<xsl:with-param name="value" select="concat(substring(number, 1, 2), ' ', substring(number, 3, 4), ' ', substring(number, 7, 4), ' ', substring(number, 11, 4), ' ', substring(number, 15, 4), ' ', substring(number, 19, 4), ' ', substring(number, 23, 4))" />
+			<xsl:with-param name="value" select="concat('PL', substring(number, 1, 2), ' ', substring(number, 3, 4), ' ', substring(number, 7, 4), ' ', substring(number, 11, 4), ' ', substring(number, 15, 4), ' ', substring(number, 19, 4), ' ', substring(number, 23, 4))" />
 		</xsl:call-template>
 		<xsl:call-template name="titleValue">
 			<xsl:with-param name="title" select="'Waluta rachunku'" />

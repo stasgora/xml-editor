@@ -1,10 +1,8 @@
 package dev.sgora.xml_editor.services.pdf;
 
-import dev.sgora.xml_editor.XMLEditor;
 import dev.sgora.xml_editor.services.xml.XMLService;
 import org.apache.fop.apps.*;
 
-import javax.activation.FileDataSource;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.xml.transform.Transformer;
@@ -25,6 +23,8 @@ public class PDFService {
 	}
 
 	public void generatePDF(File outFile) {
+		updateBalances();
+
 		StreamSource xmlSource = new StreamSource(new ByteArrayInputStream(xmlService.serializeXML().toByteArray()));
 		FOUserAgent userAgent = fopFactory.newFOUserAgent();
 		try (OutputStream out = new FileOutputStream(outFile)) {
@@ -37,5 +37,18 @@ public class PDFService {
 		} catch (IOException | TransformerException | FOPException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void updateBalances() {
+		var history = xmlService.query("transactionHistory");
+		var transactions = history.getChildNodes();
+
+		var period = xmlService.query("period");
+		double balance = Double.parseDouble(period.getAttributes().getNamedItem("startBalance").getTextContent());
+		for (int i = 0; i < transactions.getLength(); i++) {
+			balance += Double.parseDouble(transactions.item(i).getLastChild().getTextContent());
+			transactions.item(i).appendChild(xmlService.createElement("balanceAfer", String.valueOf(balance)));
+		}
+		period.appendChild(xmlService.createElement("endBalance", String.valueOf(balance)));
 	}
 }

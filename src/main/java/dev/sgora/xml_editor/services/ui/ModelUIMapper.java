@@ -86,6 +86,7 @@ public class ModelUIMapper {
 			listener.call();
 		});
 		getChildOfType(period.children, NumericElement.class).addListener(listener);
+		balance.setText(String.valueOf(calcEndBalance(period, transations)));
 	}
 
 	private <M extends Element> M getChildOfModelType(List<M> children, Class type) {
