@@ -29,24 +29,29 @@
 	</xsl:template>
 	<xsl:template match="transactionHistory">
 		<fo:table margin-top="1.5em">
+			<fo:table-column column-number="1" />
+			<fo:table-column column-number="2" />
+			<fo:table-column column-number="3" column-width="30em"/>
+			<fo:table-column column-number="4" />
+			<fo:table-column column-number="5" />
+			<fo:table-header background-color="#cccccc" border-top="solid 0.4mm black" border-bottom="solid 0.4mm black">
+				<xsl:call-template name="cellText">
+					<xsl:with-param name="text" select="'Data wykonania'" />
+				</xsl:call-template>
+				<xsl:call-template name="cellText">
+					<xsl:with-param name="text" select="'Data ksiegowania'" />
+				</xsl:call-template>
+				<xsl:call-template name="cellText">
+					<xsl:with-param name="text" select="'Opis transakcji'" />
+				</xsl:call-template>
+				<xsl:call-template name="cellText">
+					<xsl:with-param name="text" select="'Kwota transakcji'" />
+				</xsl:call-template>
+				<xsl:call-template name="cellText">
+					<xsl:with-param name="text" select="'Saldo po transakcji'" />
+				</xsl:call-template>
+			</fo:table-header>
 			<fo:table-body>
-				<fo:table-row background-color="#cccccc" border-top="solid 0.4mm black" border-bottom="solid 0.4mm black">
-					<xsl:call-template name="cellText">
-						<xsl:with-param name="text" select="'Data wykonania'" />
-					</xsl:call-template>
-					<xsl:call-template name="cellText">
-						<xsl:with-param name="text" select="'Data ksiegowania'" />
-					</xsl:call-template>
-					<xsl:call-template name="cellText">
-						<xsl:with-param name="text" select="'Opis transakcji'" />
-					</xsl:call-template>
-					<xsl:call-template name="cellText">
-						<xsl:with-param name="text" select="'Kwota transakcji'" />
-					</xsl:call-template>
-					<xsl:call-template name="cellText">
-						<xsl:with-param name="text" select="'Saldo po transakcji'" />
-					</xsl:call-template>
-				</fo:table-row>
 				<xsl:for-each select="transaction">
 					<fo:table-row border-bottom="solid 0.2mm gray">
 						<xsl:apply-templates select="." />
